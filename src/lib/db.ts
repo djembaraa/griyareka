@@ -42,6 +42,23 @@ export async function getPosts(): Promise<Post[]> {
   return data as Post[];
 }
 
+export async function getPaginatedPosts(page: number, limit: number): Promise<{ data: Post[], count: number }> {
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
+  const { data, count, error } = await supabase
+    .from('posts')
+    .select('*, profiles(display_name)', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (error) {
+    if (isSupabaseConfigured) console.error('Error fetching paginated posts:', error?.message || error);
+    return { data: [], count: 0 };
+  }
+  return { data: data as Post[], count: count || 0 };
+}
+
 export async function getPostById(id: string): Promise<Post | null> {
   const { data, error } = await supabase
     .from('posts')
