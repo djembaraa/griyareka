@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase, isSupabaseConfigured } from './supabase';
 
 export type Post = {
   id: string;
@@ -33,7 +33,7 @@ export async function getPosts(): Promise<Post[]> {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching posts:', error);
+    if (isSupabaseConfigured) console.error('Error fetching posts:', error?.message || error);
     return [];
   }
   return data as Post[];
@@ -95,7 +95,7 @@ export async function getProperties(): Promise<Property[]> {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching properties:', error);
+    if (isSupabaseConfigured) console.error('Error fetching properties:', error?.message || error);
     return [];
   }
   return data as Property[];
@@ -180,7 +180,7 @@ export async function getPublishedTestimonials(): Promise<Testimonial[]> {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching published testimonials:', error);
+    if (isSupabaseConfigured) console.error('Error fetching published testimonials:', error?.message || error);
     return [];
   }
   return data as Testimonial[];
@@ -193,7 +193,7 @@ export async function getAllTestimonials(): Promise<Testimonial[]> {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching all testimonials:', error);
+    if (isSupabaseConfigured) console.error('Error fetching all testimonials:', error?.message || error);
     return [];
   }
   return data as Testimonial[];
