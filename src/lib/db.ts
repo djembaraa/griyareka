@@ -117,3 +117,79 @@ export async function deletePostSupabase(id: string) {
   return true;
 }
 */
+
+// ==========================================
+// PROPERTIES
+// ==========================================
+
+export type Property = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  image_url: string;
+  created_at: string;
+};
+
+export const MOCK_PROPERTIES: Property[] = [
+  {
+    id: 'p1',
+    title: 'Tipe 45/90 Minimalis Modern',
+    slug: 'tipe-45-90-minimalis-modern',
+    description: 'Rumah compact dengan desain fasad modern minimalis. Sangat cocok untuk keluarga muda dengan ruang terbuka yang efisien.',
+    price: 850000000,
+    bedrooms: 2,
+    bathrooms: 1,
+    image_url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80',
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'p2',
+    title: 'Tipe 70/120 Smart Home',
+    slug: 'tipe-70-120-smart-home',
+    description: 'Hunian ideal dengan integrasi smart home system (smart door lock, lighting control). Dilengkapi dengan taman belakang yang luas.',
+    price: 1350000000,
+    bedrooms: 3,
+    bathrooms: 2,
+    image_url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80',
+    created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+  },
+  {
+    id: 'p3',
+    title: 'Tipe 120/200 Premium Green',
+    slug: 'tipe-120-200-premium-green',
+    description: 'Desain premium berkonsep green building dengan sirkulasi udara optimal dan pencahayaan alami yang maksimal di seluruh sudut rumah.',
+    price: 2500000000,
+    bedrooms: 4,
+    bathrooms: 3,
+    image_url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80',
+    created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+  }
+];
+
+export async function getProperties(): Promise<Property[]> {
+  return Promise.resolve(MOCK_PROPERTIES);
+}
+
+export async function getPropertyBySlug(slug: string): Promise<Property | null> {
+  const property = MOCK_PROPERTIES.find(p => p.slug === slug);
+  return Promise.resolve(property || null);
+}
+
+/*
+export async function getPropertiesSupabase(): Promise<Property[]> {
+  const { data, error } = await supabase
+    .from('properties')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching properties:', error);
+    return [];
+  }
+  return data as Property[];
+}
+*/

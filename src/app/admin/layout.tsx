@@ -18,6 +18,7 @@ export default function AdminLayout({
 
   const navItems = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Properties', href: '/admin/properties', icon: Home },
     { name: 'Posts', href: '/admin/posts', icon: FileText },
     { name: 'Profile', href: '/admin/profile', icon: User },
   ];

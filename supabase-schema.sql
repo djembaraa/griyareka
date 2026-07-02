@@ -48,3 +48,31 @@ CREATE POLICY "Only authenticated users can update their posts" ON public.posts
 
 CREATE POLICY "Only authenticated users can delete their posts" ON public.posts
   FOR DELETE USING (auth.uid() = author_id);
+
+-- Properties table for Property Catalog
+CREATE TABLE public.properties (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  price NUMERIC NOT NULL,
+  bedrooms INTEGER NOT NULL,
+  bathrooms INTEGER NOT NULL,
+  image_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for properties
+ALTER TABLE public.properties ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Properties are viewable by everyone." ON public.properties
+  FOR SELECT USING (true);
+
+CREATE POLICY "Only authenticated users can insert properties" ON public.properties
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Only authenticated users can update properties" ON public.properties
+  FOR UPDATE USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Only authenticated users can delete properties" ON public.properties
+  FOR DELETE USING (auth.role() = 'authenticated');
