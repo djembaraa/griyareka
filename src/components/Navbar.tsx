@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Menu, X, Home } from 'lucide-react';
 import { Button } from './ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -50,40 +51,71 @@ export function Navbar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-slate-600 hover:text-blue-900 focus:outline-none cursor-pointer"
+              className="relative text-slate-600 hover:text-blue-900 focus:outline-none cursor-pointer w-6 h-6"
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <AnimatePresence mode="wait">
+                {isOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ opacity: 0, rotate: -90 }}
+                    animate={{ opacity: 1, rotate: 0 }}
+                    exit={{ opacity: 0, rotate: 90 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute inset-0"
+                  >
+                    <X className="h-6 w-6" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ opacity: 0, rotate: 90 }}
+                    animate={{ opacity: 1, rotate: 0 }}
+                    exit={{ opacity: 0, rotate: -90 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute inset-0"
+                  >
+                    <Menu className="h-6 w-6" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </button>
           </div>
         </div>
       </div>
       
       {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden border-t">
-          <div className="space-y-1 px-4 pb-3 pt-2">
-            {routes.map((route) => (
-              <Link
-                key={route.path}
-                href={route.path}
-                onClick={() => setIsOpen(false)}
-                className={`block rounded-md px-3 py-2 text-base font-medium ${
-                  isActive(route.path)
-                    ? 'bg-blue-50 text-orange-600'
-                    : 'text-slate-600 hover:bg-gray-50 hover:text-blue-900'
-                }`}
-              >
-                {route.name}
-              </Link>
-            ))}
-            <div className="pt-2">
-              <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-                Konsultasi Sekarang
-              </Button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden overflow-hidden border-t"
+          >
+            <div className="space-y-1 px-4 pb-3 pt-2">
+              {routes.map((route) => (
+                <Link
+                  key={route.path}
+                  href={route.path}
+                  onClick={() => setIsOpen(false)}
+                  className={`block rounded-md px-3 py-2 text-base font-medium ${
+                    isActive(route.path)
+                      ? 'bg-blue-50 text-orange-600'
+                      : 'text-slate-600 hover:bg-gray-50 hover:text-blue-900'
+                  }`}
+                >
+                  {route.name}
+                </Link>
+              ))}
+              <div className="pt-2">
+                <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+                  Konsultasi Sekarang
+                </Button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
