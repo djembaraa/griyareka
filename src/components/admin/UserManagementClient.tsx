@@ -70,10 +70,8 @@ export function UserManagementClient({ initialUsers }: { initialUsers: UserProfi
     <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
       <div className="p-4 flex justify-end">
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-slate-900 text-white hover:bg-slate-800">
-              Tambah User
-            </Button>
+          <DialogTrigger render={<Button className="bg-slate-900 text-white hover:bg-slate-800" />}>
+            Tambah User
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>

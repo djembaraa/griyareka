@@ -10,6 +10,8 @@ export type UserProfile = {
   display_name: string | null;
   email: string | null;
   role: string | null;
+  bio?: string | null;
+  avatar_url?: string | null;
   created_at: string;
 };
 
@@ -38,6 +40,12 @@ const updateUserSchema = z.object({
   role: z.enum(['root', 'admin', 'sales', 'cs']),
 });
 
+const updateOwnProfileSchema = z.object({
+  display_name: z.string().min(2, "Nama minimal 2 karakter"),
+  bio: z.string().nullable().optional(),
+  avatar_url: z.string().url().nullable().optional(),
+});
+
 export async function getUsers(): Promise<UserProfile[]> {
   const { data, error } = await supabaseAdmin
     .from('profiles')
@@ -50,6 +58,59 @@ export async function getUsers(): Promise<UserProfile[]> {
   }
 
   return data as UserProfile[];
+}
+
+export async function getOwnProfile(currentUserId: string): Promise<UserProfile | null> {
+  if (!currentUserId) return null;
+  
+  const { data, error } = await supabaseAdmin
+    .from('profiles')
+    .select('*')
+    .eq('id', currentUserId)
+    .single();
+    
+  if (error) {
+    console.error("Error fetching own profile:", error);
+    return null;
+  }
+  
+  return data as UserProfile;
+}
+
+export async function updateOwnProfile(currentUserId: string, formData: FormData) {
+  try {
+    if (!currentUserId) {
+      return { success: false, message: 'Harus login untuk memperbarui profil.' };
+    }
+
+    const rawData = {
+      display_name: formData.get('display_name') as string,
+      bio: formData.get('bio') as string || null,
+      avatar_url: formData.get('avatar_url') as string || null,
+    };
+
+    const validation = updateOwnProfileSchema.safeParse(rawData);
+    if (!validation.success) {
+      return { success: false, message: validation.error.issues[0].message };
+    }
+
+    const { error } = await supabaseAdmin
+      .from('profiles')
+      .update(validation.data)
+      .eq('id', currentUserId);
+
+    if (error) {
+      console.error("Update own profile error:", error);
+      return { success: false, message: 'Gagal memperbarui profil.' };
+    }
+
+    revalidatePath('/admin/profile');
+    return { success: true, message: 'Profil berhasil diperbarui.' };
+
+  } catch (err) {
+    console.error(err);
+    return { success: false, message: 'Terjadi kesalahan sistem.' };
+  }
 }
 
 export async function createAdmin(currentUserId: string, formData: FormData) {
@@ -171,9 +232,6 @@ export async function deleteUser(currentUserId: string, id: string) {
     
     if (authError) {
       console.error("Delete auth user error:", authError);
-      // Note: Profil is already deleted, user will become orphaned or we should have cascade.
-      // Supabase recommends cascading from auth.users, but deleting auth.users first if cascade is set.
-      // Since we don't assume cascade on profiles, we delete profiles first.
     }
 
     revalidatePath('/admin/users');
