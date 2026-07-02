@@ -31,7 +31,7 @@ Instruksi Penting:
 `,
     });
 
-    return result.toDataStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error) {
     console.error('Chat API Error:', error);
     return new Response(JSON.stringify({ error: 'Gagal merespons' }), { status: 500 });

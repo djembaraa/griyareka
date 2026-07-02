@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { UserProfile, createUser, updateUser, deleteUser } from '@/app/actions/users';
+import { UserProfile, inviteAdmin, updateUser, deleteUser } from '@/app/actions/users';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,7 +28,7 @@ export function UserManagementClient({ initialUsers }: { initialUsers: UserProfi
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
-    const res = await createUser(currentUserId, formData);
+    const res = await inviteAdmin(currentUserId, formData);
     if (res.success) {
       alert(res.message);
       setIsAddOpen(false);
@@ -80,15 +80,7 @@ export function UserManagementClient({ initialUsers }: { initialUsers: UserProfi
             <form onSubmit={handleAdd} className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label>Email</Label>
-                <Input name="email" type="email" required />
-              </div>
-              <div className="space-y-2">
-                <Label>Password</Label>
-                <Input name="password" type="password" required minLength={6} />
-              </div>
-              <div className="space-y-2">
-                <Label>Display Name</Label>
-                <Input name="display_name" required />
+                <Input name="email" type="email" required placeholder="staf@griyareka.id" />
               </div>
               <div className="space-y-2">
                 <Label>Role</Label>
@@ -104,8 +96,8 @@ export function UserManagementClient({ initialUsers }: { initialUsers: UserProfi
                   </SelectContent>
                 </Select>
               </div>
-              <Button type="submit" disabled={loading} className="w-full">
-                {loading ? 'Menyimpan...' : 'Simpan User'}
+              <Button type="submit" disabled={loading} className="w-full bg-blue-900 hover:bg-blue-800 text-white">
+                {loading ? 'Mengirim Undangan...' : 'Kirim Undangan'}
               </Button>
             </form>
           </DialogContent>

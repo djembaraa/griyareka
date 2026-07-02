@@ -26,10 +26,8 @@ async function getCurrentUserRole(currentUserId: string): Promise<string | null>
   return profile?.role || null;
 }
 
-const userSchema = z.object({
+const inviteSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6, "Password minimal 6 karakter"),
-  display_name: z.string().min(2, "Nama minimal 2 karakter"),
   role: z.enum(['root', 'admin', 'sales', 'cs']).default('admin'),
 });
 
@@ -52,58 +50,58 @@ export async function getUsers(): Promise<UserProfile[]> {
   return data as UserProfile[];
 }
 
-export async function createUser(currentUserId: string, formData: FormData) {
+export async function inviteAdmin(currentUserId: string, formData: FormData) {
   try {
     const role = await getCurrentUserRole(currentUserId);
     if (role !== 'root') {
-      return { success: false, message: 'Akses ditolak. Hanya ROOT yang dapat menambah user.' };
+      return { success: false, message: 'Akses ditolak. Hanya ROOT yang dapat mengundang user.' };
     }
 
     const rawData = {
       email: formData.get('email') as string,
-      password: formData.get('password') as string,
-      display_name: formData.get('display_name') as string,
       role: formData.get('role') as string,
     };
 
-    const validation = userSchema.safeParse(rawData);
+    const validation = inviteSchema.safeParse(rawData);
     if (!validation.success) {
       return { success: false, message: validation.error.issues[0].message };
     }
 
-    const { email, password, display_name, role: newRole } = validation.data;
+    const { email, role: newRole } = validation.data;
 
-    // 1. Create user in Supabase Auth
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true // Auto confirm since admin is creating them
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const redirectUrl = `${siteUrl}/auth/callback`;
+
+    // 1. Invite user in Supabase Auth
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+      redirectTo: redirectUrl,
+      data: { role: newRole }
     });
 
     if (authError || !authData.user) {
-      console.error("Auth creation error:", authError);
-      return { success: false, message: authError?.message || 'Gagal membuat user di sistem otentikasi.' };
+      console.error("Auth invite error:", authError);
+      return { success: false, message: authError?.message || 'Gagal mengirim undangan ke email.' };
     }
 
-    // 2. Insert into profiles
+    // 2. Insert into profiles with display_name 'Pending'
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
       .insert({
         id: authData.user.id,
         email,
-        display_name,
+        display_name: 'Pending',
         role: newRole
       });
 
     if (profileError) {
       console.error("Profile creation error:", profileError);
-      // Rollback (delete auth user)
+      // Rollback
       await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
       return { success: false, message: 'Gagal membuat profil user.' };
     }
 
     revalidatePath('/admin/users');
-    return { success: true, message: 'User berhasil ditambahkan.' };
+    return { success: true, message: 'Undangan berhasil dikirim!' };
 
   } catch (err) {
     console.error(err);
