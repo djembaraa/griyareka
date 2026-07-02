@@ -37,10 +37,10 @@ export default async function AdminPostsPage(props: { searchParams: Promise<{ pa
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-sm font-medium text-slate-600">
-                <th className="p-4 pl-6">Judul Artikel</th>
-                <th className="p-4">Tanggal Publikasi</th>
-                <th className="p-4">Author</th>
-                <th className="p-4 text-right pr-6">Aksi</th>
+                <th className="p-4 pl-6 whitespace-nowrap">Judul Artikel</th>
+                <th className="p-4 whitespace-nowrap">Tanggal Publikasi</th>
+                <th className="p-4 whitespace-nowrap">Author</th>
+                <th className="p-4 text-right pr-6 whitespace-nowrap">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -49,21 +49,23 @@ export default async function AdminPostsPage(props: { searchParams: Promise<{ pa
                   <td className="p-4 pl-6 font-medium text-slate-900 max-w-[300px] truncate">
                     {post.title}
                   </td>
-                  <td className="p-4 text-slate-500 text-sm">
+                  <td className="p-4 text-slate-500 text-sm whitespace-nowrap">
                     {new Date(post.created_at).toLocaleDateString('id-ID')}
                   </td>
-                  <td className="p-4 text-slate-500 text-sm">
+                  <td className="p-4 text-slate-500 text-sm whitespace-nowrap">
                     {post.profiles?.display_name || 'Admin'}
                   </td>
-                  <td className="p-4 text-right pr-6 space-x-2">
-                    <Link href={`/admin/posts/${post.id}`}>
-                      <Button variant="outline" size="sm" className="h-8 px-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-                        <Edit className="h-4 w-4" />
+                  <td className="p-4 text-right pr-6">
+                    <div className="flex items-center justify-end gap-2 whitespace-nowrap">
+                      <Link href={`/admin/posts/${post.id}`}>
+                        <Button variant="outline" size="sm" className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                      <Button variant="outline" size="sm" className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50">
+                        <Trash2 className="h-4 w-4" />
                       </Button>
-                    </Link>
-                    <Button variant="outline" size="sm" className="h-8 px-2 text-red-600 hover:text-red-700 hover:bg-red-50">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    </div>
                   </td>
                 </tr>
               ))}

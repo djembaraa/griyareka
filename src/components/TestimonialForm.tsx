@@ -21,8 +21,8 @@ export function TestimonialForm() {
   }
 
   return (
-    <div className="bg-white p-8 rounded-2xl shadow-xl text-slate-900 mt-10 lg:mt-0">
-      <h3 className="text-2xl font-bold mb-6">Bagikan Pengalaman Anda</h3>
+    <div className="bg-white p-6 md:p-8 rounded-2xl shadow-xl text-slate-900 mt-10 lg:mt-0">
+      <h3 className="text-xl md:text-2xl font-bold mb-6">Bagikan Pengalaman Anda</h3>
       <form action={handleAction} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium mb-1">Nama / Asal Kota <span className="text-red-500">*</span></label>
@@ -53,12 +53,12 @@ export function TestimonialForm() {
           />
         </div>
         
-        <div className="flex items-start space-x-2 pt-2">
-          <Checkbox id="is_subscribed" name="is_subscribed" />
-          <div className="grid gap-1.5 leading-none">
+        <div className="flex items-start space-x-3 pt-2">
+          <Checkbox id="is_subscribed" name="is_subscribed" className="mt-0.5" />
+          <div className="grid gap-1.5 leading-snug">
             <label
               htmlFor="is_subscribed"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
+              className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
             >
               Saya setuju untuk menerima pembaruan, buletin, dan penawaran dari GriyaReka via email.
             </label>
