@@ -18,13 +18,13 @@ export default async function AdminPostsPage(props: { searchParams: Promise<{ pa
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Blog Posts</h1>
           <p className="text-slate-500 mt-2">Kelola semua artikel blog di sini.</p>
         </div>
-        <Link href="/admin/posts/new">
-          <Button className="bg-orange-600 hover:bg-orange-700 text-white">
+        <Link href="/admin/posts/new" className="w-full sm:w-auto">
+          <Button className="bg-orange-600 hover:bg-orange-700 text-white w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" /> Tulis Artikel Baru
           </Button>
         </Link>

@@ -83,12 +83,19 @@ export default async function AdminDashboardPage(props: { searchParams: Promise<
             const authorName = activity.profiles?.display_name || 'Admin';
 
             return (
-              <div key={activity.id} className="flex items-center gap-4 py-3 border-b last:border-0">
-                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-900 font-bold shrink-0">
-                  {authorName[0].toUpperCase()}
+              <div key={activity.id} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-3 border-b last:border-0">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-900 font-bold shrink-0">
+                    {authorName[0].toUpperCase()}
+                  </div>
+                  <div className="sm:hidden text-xs text-slate-400">
+                    {new Date(activity.created_at).toLocaleDateString('id-ID', {
+                      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                    })}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-900">
+                <div className="flex-1 break-words overflow-hidden">
+                  <p className="text-sm font-medium text-slate-900 leading-relaxed">
                     {authorName} {actionText} {entityText} {activity.entity_type === 'post' && activity.entity_slug ? (
                       <Link href={`/blog/${activity.entity_slug}`} className="text-blue-600 hover:underline">
                         &quot;{activity.entity_title}&quot;
@@ -98,7 +105,7 @@ export default async function AdminDashboardPage(props: { searchParams: Promise<
                     )}
                   </p>
                 </div>
-                <div className="ml-auto text-xs text-slate-400">
+                <div className="hidden sm:block ml-auto text-xs text-slate-400 shrink-0">
                   {new Date(activity.created_at).toLocaleDateString('id-ID', {
                     day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
                   })}

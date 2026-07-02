@@ -77,10 +77,12 @@ export function UserManagementClient({
 
   return (
     <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
-      <div className="p-4 flex justify-end">
+      <div className="p-4 flex sm:justify-end">
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-          <DialogTrigger render={<Button className="bg-slate-900 text-white hover:bg-slate-800" />}>
-            Tambah User
+          <DialogTrigger asChild>
+            <Button className="w-full sm:w-auto bg-slate-900 text-white hover:bg-slate-800">
+              Tambah User
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -121,47 +123,49 @@ export function UserManagementClient({
         </Dialog>
       </div>
 
-      <table className="w-full text-sm text-left">
-        <thead className="bg-slate-50 border-b text-slate-500 uppercase text-xs">
-          <tr>
-            <th className="px-6 py-4 font-medium">Email</th>
-            <th className="px-6 py-4 font-medium">Display Name</th>
-            <th className="px-6 py-4 font-medium">Role</th>
-            <th className="px-6 py-4 font-medium text-right">Aksi</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y">
-          {users.map((u) => (
-            <tr key={u.id} className="hover:bg-slate-50">
-              <td className="px-6 py-4">{u.email}</td>
-              <td className="px-6 py-4">{u.display_name}</td>
-              <td className="px-6 py-4">
-                <span className="bg-slate-100 text-slate-800 border px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase">{u.role}</span>
-              </td>
-              <td className="px-6 py-4 text-right space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => {
-                    setEditingUser(u);
-                    setIsEditOpen(true);
-                  }}
-                >
-                  Edit
-                </Button>
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
-                  onClick={() => handleDelete(u.id)}
-                  disabled={u.id === currentUserId}
-                >
-                  Hapus
-                </Button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left">
+          <thead className="bg-slate-50 border-b text-slate-500 uppercase text-xs">
+            <tr>
+              <th className="px-6 py-4 font-medium">Email</th>
+              <th className="px-6 py-4 font-medium">Display Name</th>
+              <th className="px-6 py-4 font-medium">Role</th>
+              <th className="px-6 py-4 font-medium text-right">Aksi</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y">
+            {users.map((u) => (
+              <tr key={u.id} className="hover:bg-slate-50">
+                <td className="px-6 py-4 whitespace-nowrap">{u.email}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{u.display_name}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className="bg-slate-100 text-slate-800 border px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase">{u.role}</span>
+                </td>
+                <td className="px-6 py-4 text-right space-x-2 whitespace-nowrap">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => {
+                      setEditingUser(u);
+                      setIsEditOpen(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    size="sm" 
+                    onClick={() => handleDelete(u.id)}
+                    disabled={u.id === currentUserId}
+                  >
+                    Hapus
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <PaginationControls currentPage={currentPage} totalPages={totalPages} />
 
       {editingUser && (
