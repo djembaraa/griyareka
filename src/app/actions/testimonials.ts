@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 
 const testimonialSchema = z.object({
   name: z.string().min(2, "Nama terlalu pendek").max(50, "Nama maksimal 50 karakter"),
-  email: z.string().email("Format email tidak valid").optional().or(z.literal('')),
+  email: z.string().min(1, "Email wajib diisi").email("Format email tidak valid"),
   phone: z.string().max(20, "Nomor telepon terlalu panjang").optional().or(z.literal('')),
   content: z.string().min(10, "Ulasan terlalu pendek").max(500, "Ulasan maksimal 500 karakter"),
   is_subscribed: z.boolean().default(false),

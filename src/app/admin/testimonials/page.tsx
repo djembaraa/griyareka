@@ -20,6 +20,7 @@ export default async function AdminTestimonialsPage() {
               <th className="px-6 py-4 font-medium">Tanggal</th>
               <th className="px-6 py-4 font-medium">Nama/Asal</th>
               <th className="px-6 py-4 font-medium">Ulasan</th>
+              <th className="px-6 py-4 font-medium">Info Kontak</th>
               <th className="px-6 py-4 font-medium">Status</th>
               <th className="px-6 py-4 font-medium text-right">Aksi</th>
             </tr>
@@ -27,7 +28,7 @@ export default async function AdminTestimonialsPage() {
           <tbody className="divide-y">
             {testimonials.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
+                <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
                   Belum ada ulasan.
                 </td>
               </tr>
@@ -46,6 +47,17 @@ export default async function AdminTestimonialsPage() {
                       className="line-clamp-3 whitespace-pre-wrap"
                       dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(testi.content) }}
                     />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-col space-y-1">
+                      <span className="text-slate-800 text-sm font-medium">{testi.email}</span>
+                      {testi.phone && <span className="text-slate-500 text-xs">{testi.phone}</span>}
+                      {testi.is_subscribed && (
+                        <span className="inline-flex items-center px-2 py-0.5 mt-1 rounded text-[10px] font-medium bg-blue-100 text-blue-800 w-fit">
+                          Newsletter
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${

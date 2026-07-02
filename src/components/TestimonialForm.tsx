@@ -31,8 +31,8 @@ export function TestimonialForm() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1">Email Address (Opsional)</label>
-            <Input id="email" name="email" type="email" placeholder="budi@example.com" />
+            <label htmlFor="email" className="block text-sm font-medium mb-1">Email Address <span className="text-red-500">*</span></label>
+            <Input id="email" name="email" type="email" placeholder="budi@example.com" required />
           </div>
           <div>
             <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone Number (Opsional)</label>
