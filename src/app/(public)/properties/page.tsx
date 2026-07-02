@@ -35,8 +35,8 @@ export default async function PropertiesPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
             >
-              <Card className="overflow-hidden group hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer border-none shadow-md h-full">
-                <div className="relative h-64 w-full overflow-hidden">
+              <Card className="p-0 overflow-hidden group hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer border-none shadow-md h-full">
+                <Link href={`/properties/${property.slug}`} className="block relative h-64 w-full overflow-hidden">
                   <Image
                     src={property.image_url}
                     alt={property.title}
@@ -46,7 +46,7 @@ export default async function PropertiesPage() {
                   <div className="absolute top-4 right-4 bg-orange-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
                     Tersedia
                   </div>
-                </div>
+                </Link>
                 
                 <CardContent className="p-6">
                   <h2 className="text-2xl font-bold text-slate-900 mb-2 truncate">
