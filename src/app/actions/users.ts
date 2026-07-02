@@ -60,6 +60,24 @@ export async function getUsers(): Promise<UserProfile[]> {
   return data as UserProfile[];
 }
 
+export async function getPaginatedUsers(page: number, limit: number): Promise<{ data: UserProfile[], count: number }> {
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
+  const { data, count, error } = await supabaseAdmin
+    .from('profiles')
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (error) {
+    console.error("Error fetching paginated users:", error);
+    return { data: [], count: 0 };
+  }
+
+  return { data: data as UserProfile[], count: count || 0 };
+}
+
 export async function getOwnProfile(currentUserId: string): Promise<UserProfile | null> {
   if (!currentUserId) return null;
   

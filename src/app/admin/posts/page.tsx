@@ -1,10 +1,16 @@
 import Link from 'next/link';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getPosts } from '@/lib/db';
+import { getPaginatedPosts } from '@/lib/db';
+import { PaginationControls } from '@/components/PaginationControls';
 
-export default async function AdminPostsPage() {
-  const posts = await getPosts();
+export default async function AdminPostsPage(props: { searchParams: Promise<{ page?: string }> }) {
+  const searchParams = await props.searchParams;
+  const page = parseInt(searchParams.page || '1', 10) || 1;
+  const limit = 10;
+  
+  const { data: posts, count } = await getPaginatedPosts(page, limit);
+  const totalPages = Math.ceil(count / limit);
 
   return (
     <div>
@@ -41,7 +47,7 @@ export default async function AdminPostsPage() {
                     {new Date(post.created_at).toLocaleDateString('id-ID')}
                   </td>
                   <td className="p-4 text-slate-500 text-sm">
-                    Admin GriyaReka
+                    {post.profiles?.display_name || 'Admin'}
                   </td>
                   <td className="p-4 text-right pr-6 space-x-2">
                     <Link href={`/admin/posts/${post.id}`}>
@@ -65,6 +71,7 @@ export default async function AdminPostsPage() {
             </tbody>
           </table>
         </div>
+        <PaginationControls currentPage={page} totalPages={totalPages} />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { logActivityServer } from '@/lib/activity';
 
 const createPostSchema = z.object({
   title: z.string().min(1, 'Judul tidak boleh kosong'),
@@ -49,7 +50,7 @@ export async function createPost(currentUserId: string, formData: FormData) {
     // Use default image if not provided
     const finalImageUrl = image_url || 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80';
 
-    const { error } = await supabaseAdmin
+    const { error, data: newPost } = await supabaseAdmin
       .from('posts')
       .insert({
         title,
@@ -58,7 +59,9 @@ export async function createPost(currentUserId: string, formData: FormData) {
         slug,
         author_id: currentUserId,
         status: 'draft'
-      });
+      })
+      .select()
+      .single();
 
     if (error) {
       console.error('Insert post error:', error);
@@ -68,6 +71,8 @@ export async function createPost(currentUserId: string, formData: FormData) {
       }
       return { success: false, message: 'Gagal menyimpan artikel ke database.' };
     }
+
+    await logActivityServer(currentUserId, 'created', 'post', newPost.id, newPost.title, newPost.slug);
 
     revalidatePath('/admin/posts');
     return { success: true, message: 'Artikel berhasil disimpan sebagai draft!' };

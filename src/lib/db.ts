@@ -1,4 +1,6 @@
 import { supabase, isSupabaseConfigured } from './supabase';
+import { supabaseAdmin } from './supabase-admin';
+import { logActivityClient } from './activity';
 
 export type Post = {
   id: string;
@@ -25,6 +27,39 @@ export type Property = {
   created_at: string;
 };
 
+export type AdminActivity = {
+  id: string;
+  user_id: string;
+  action_type: 'created' | 'updated' | 'deleted';
+  entity_type: 'post' | 'property' | 'testimonial' | 'user';
+  entity_id: string;
+  entity_title: string;
+  entity_slug: string | null;
+  created_at: string;
+  profiles?: { display_name: string };
+};
+
+// ==========================================
+// SUPABASE ADMIN ACTIVITIES
+// ==========================================
+
+export async function getPaginatedActivities(page: number, limit: number): Promise<{ data: AdminActivity[], count: number }> {
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
+  const { data, count, error } = await supabase
+    .from('admin_activities')
+    .select('*, profiles(display_name)', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (error) {
+    if (isSupabaseConfigured) console.error('Error fetching activities:', error?.message || error);
+    return { data: [], count: 0 };
+  }
+  return { data: data as AdminActivity[], count: count || 0 };
+}
+
 // ==========================================
 // SUPABASE POSTS
 // ==========================================
@@ -42,15 +77,59 @@ export async function getPosts(): Promise<Post[]> {
   return data as Post[];
 }
 
-export async function getPaginatedPosts(page: number, limit: number): Promise<{ data: Post[], count: number }> {
+export async function getDashboardStats() {
+  const [
+    { count: postsCount },
+    { count: activitiesCount },
+    { count: testimonialsCount },
+    { count: usersCount }
+  ] = await Promise.all([
+    supabase.from('posts').select('*', { count: 'exact', head: true }),
+    supabase.from('admin_activities').select('*', { count: 'exact', head: true }),
+    supabase.from('testimonials').select('*', { count: 'exact', head: true }),
+    supabaseAdmin.from('profiles').select('*', { count: 'exact', head: true })
+  ]);
+  
+  return {
+    posts: postsCount || 0,
+    activities: activitiesCount || 0,
+    testimonials: testimonialsCount || 0,
+    users: usersCount || 0
+  };
+}
+
+export async function getAuthors(): Promise<{ id: string, display_name: string }[]> {
+  const { data, error } = await supabaseAdmin
+    .from('profiles')
+    .select('id, display_name')
+    .order('display_name', { ascending: true });
+    
+  if (error) {
+    if (isSupabaseConfigured) console.error('Error fetching authors:', error?.message || error);
+    return [];
+  }
+  return data as { id: string, display_name: string }[];
+}
+
+export async function getPaginatedPosts(page: number, limit: number, authorId?: string, sortBy: string = 'newest'): Promise<{ data: Post[], count: number }> {
   const from = (page - 1) * limit;
   const to = from + limit - 1;
 
-  const { data, count, error } = await supabase
+  let query = supabase
     .from('posts')
-    .select('*, profiles(display_name)', { count: 'exact' })
-    .order('created_at', { ascending: false })
-    .range(from, to);
+    .select('*, profiles(display_name)', { count: 'exact' });
+
+  if (authorId && authorId !== 'all') {
+    query = query.eq('author_id', authorId);
+  }
+
+  if (sortBy === 'oldest') {
+    query = query.order('created_at', { ascending: true });
+  } else {
+    query = query.order('created_at', { ascending: false });
+  }
+
+  const { data, count, error } = await query.range(from, to);
 
   if (error) {
     if (isSupabaseConfigured) console.error('Error fetching paginated posts:', error?.message || error);
@@ -88,19 +167,33 @@ export async function updatePost(id: string, updates: Partial<Post>) {
     .from('posts')
     .update(updates)
     .eq('id', id)
-    .select();
+    .select()
+    .single();
     
   if (error) throw error;
+  
+  if (data) {
+    await logActivityClient('updated', 'post', data.id, data.title, data.slug);
+  }
+  
   return data;
 }
 
 export async function deletePost(id: string) {
+  // Fetch post first to get title and slug for the log
+  const { data: postToDel } = await supabase.from('posts').select('title, slug').eq('id', id).single();
+
   const { error } = await supabase
     .from('posts')
     .delete()
     .eq('id', id);
     
   if (error) throw error;
+  
+  if (postToDel) {
+    await logActivityClient('deleted', 'post', id, postToDel.title, postToDel.slug);
+  }
+  
   return true;
 }
 
@@ -119,6 +212,23 @@ export async function getProperties(): Promise<Property[]> {
     return [];
   }
   return data as Property[];
+}
+
+export async function getPaginatedProperties(page: number, limit: number): Promise<{ data: Property[], count: number }> {
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
+  const { data, count, error } = await supabase
+    .from('properties')
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (error) {
+    if (isSupabaseConfigured) console.error('Error fetching paginated properties:', error?.message || error);
+    return { data: [], count: 0 };
+  }
+  return { data: data as Property[], count: count || 0 };
 }
 
 export async function getPropertyBySlug(slug: string): Promise<Property | null> {
@@ -220,6 +330,23 @@ export async function getAllTestimonials(): Promise<Testimonial[]> {
     return [];
   }
   return data as Testimonial[];
+}
+
+export async function getPaginatedTestimonials(page: number, limit: number): Promise<{ data: Testimonial[], count: number }> {
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
+  const { data, count, error } = await supabase
+    .from('testimonials')
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (error) {
+    if (isSupabaseConfigured) console.error('Error fetching paginated testimonials:', error?.message || error);
+    return { data: [], count: 0 };
+  }
+  return { data: data as Testimonial[], count: count || 0 };
 }
 
 export async function updateTestimonialStatus(id: string, is_published: boolean) {

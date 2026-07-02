@@ -1,11 +1,17 @@
 import Link from 'next/link';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getProperties } from '@/lib/db';
+import { getPaginatedProperties } from '@/lib/db';
 import { formatCurrency } from '@/lib/utils';
+import { PaginationControls } from '@/components/PaginationControls';
 
-export default async function AdminPropertiesPage() {
-  const properties = await getProperties();
+export default async function AdminPropertiesPage(props: { searchParams: Promise<{ page?: string }> }) {
+  const searchParams = await props.searchParams;
+  const page = parseInt(searchParams.page || '1', 10) || 1;
+  const limit = 10;
+  
+  const { data: properties, count } = await getPaginatedProperties(page, limit);
+  const totalPages = Math.ceil(count / limit);
 
   return (
     <div>
@@ -66,6 +72,7 @@ export default async function AdminPropertiesPage() {
             </tbody>
           </table>
         </div>
+        <PaginationControls currentPage={page} totalPages={totalPages} />
       </div>
     </div>
   );

@@ -8,8 +8,17 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { PaginationControls } from '@/components/PaginationControls';
 
-export function UserManagementClient({ initialUsers }: { initialUsers: UserProfile[] }) {
+export function UserManagementClient({ 
+  initialUsers, 
+  totalPages, 
+  currentPage 
+}: { 
+  initialUsers: UserProfile[], 
+  totalPages: number, 
+  currentPage: number 
+}) {
   const [users, setUsers] = useState<UserProfile[]>(initialUsers);
   const [currentUserId, setCurrentUserId] = useState<string>('');
   
@@ -153,6 +162,7 @@ export function UserManagementClient({ initialUsers }: { initialUsers: UserProfi
           ))}
         </tbody>
       </table>
+      <PaginationControls currentPage={currentPage} totalPages={totalPages} />
 
       {editingUser && (
         <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>

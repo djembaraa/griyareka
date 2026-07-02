@@ -1,11 +1,17 @@
-import { getAllTestimonials } from '@/lib/db';
+import { getPaginatedTestimonials } from '@/lib/db';
 import { TestimonialActions } from '@/components/TestimonialActions';
 import DOMPurify from 'isomorphic-dompurify';
+import { PaginationControls } from '@/components/PaginationControls';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminTestimonialsPage() {
-  const testimonials = await getAllTestimonials();
+export default async function AdminTestimonialsPage(props: { searchParams: Promise<{ page?: string }> }) {
+  const searchParams = await props.searchParams;
+  const page = parseInt(searchParams.page || '1', 10) || 1;
+  const limit = 10;
+  
+  const { data: testimonials, count } = await getPaginatedTestimonials(page, limit);
+  const totalPages = Math.ceil(count / limit);
 
   return (
     <div className="space-y-6">
@@ -74,6 +80,7 @@ export default async function AdminTestimonialsPage() {
             )}
           </tbody>
         </table>
+        <PaginationControls currentPage={page} totalPages={totalPages} />
       </div>
     </div>
   );
