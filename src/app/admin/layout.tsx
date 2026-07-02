@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 import { LayoutDashboard, FileText, User, Users, LogOut, Home, MessageSquare } from 'lucide-react';
 
 export default function AdminLayout({
@@ -10,6 +11,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/admin/login');
+  };
 
   // Don't show sidebar on login page
   if (pathname === '/admin/login') {
@@ -57,7 +64,10 @@ export default function AdminLayout({
             <Home className="h-5 w-5" />
             Back to Site
           </Link>
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-colors">
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-colors"
+          >
             <LogOut className="h-5 w-5" />
             Logout
           </button>
