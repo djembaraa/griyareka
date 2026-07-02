@@ -8,6 +8,9 @@ export type Post = {
   author_id: string;
   created_at: string;
   updated_at: string;
+  slug?: string;
+  status?: string;
+  profiles?: { display_name: string };
 };
 
 export type Property = {
@@ -29,7 +32,7 @@ export type Property = {
 export async function getPosts(): Promise<Post[]> {
   const { data, error } = await supabase
     .from('posts')
-    .select('*')
+    .select('*, profiles(display_name)')
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -42,7 +45,7 @@ export async function getPosts(): Promise<Post[]> {
 export async function getPostById(id: string): Promise<Post | null> {
   const { data, error } = await supabase
     .from('posts')
-    .select('*')
+    .select('*, profiles(display_name)')
     .eq('id', id)
     .single();
 

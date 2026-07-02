@@ -53,7 +53,7 @@ export default async function BlogPage() {
                   
                   {/* We just show a snippet of text if possible, but since it's HTML, we might just leave it out of the card or use a small description field if it existed. */}
                   <div className="mt-auto pt-4 border-t flex justify-between items-center text-sm text-slate-500">
-                    <span>Ditulis oleh Admin</span>
+                    <span>Ditulis oleh {post.profiles?.display_name || 'Admin'}</span>
                     <span className="text-blue-900 font-medium group-hover:underline">Baca selengkapnya &rarr;</span>
                   </div>
                 </div>

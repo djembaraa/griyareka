@@ -37,7 +37,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
             </div>
             <div className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              Admin GriyaReka
+              {post.profiles?.display_name || 'Admin GriyaReka'}
             </div>
           </div>
         </div>
