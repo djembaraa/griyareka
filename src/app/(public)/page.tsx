@@ -54,10 +54,10 @@ export default async function HomePage() {
               GriyaReka menghadirkan inovasi desain rumah modern yang berkelanjutan, memadukan estetika premium dengan fungsionalitas cerdas.
             </p>
             <div className="flex gap-4">
-              <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white border-none h-12 px-8 text-base">
+              <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white border-none h-12 px-8 text-base cursor-pointer">
                 Konsultasi Sekarang
               </Button>
-              <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white h-12 px-8 text-base backdrop-blur">
+              <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white h-12 px-8 text-base backdrop-blur cursor-pointer">
                 Lihat Portfolio
               </Button>
             </div>

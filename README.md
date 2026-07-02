@@ -97,3 +97,16 @@ Untuk mengubah fitur Testimonial menjadi alat Lead Generation yang kuat, Anda da
 2. Instal library-nya di terminal: `npm install resend`
 3. Masukkan API Key ke dalam `.env.local` kamu (misal: `RESEND_API_KEY=re_123456789`).
 4. Ganti komentar `// TODO` yang dibuat di file Server Action (`src/app/actions/testimonials.ts`) dengan kode pemanggilan Resend sederhana.
+## Pengaturan AI Chatbot (Groq API)
+
+Aplikasi ini dilengkapi dengan fitur AI Chatbot interaktif menggunakan Llama 3 via Groq. Fitur ini dirancang untuk menjawab pertanyaan pelanggan secara cerdas dan real-time.
+
+Untuk menjalankan fitur ini secara lokal:
+
+1. Daftar dan login di [Groq Cloud](https://console.groq.com).
+2. Masuk ke menu **API Keys** dan buat API Key baru secara gratis.
+3. Buka file `.env.local` di komputer lokalmu dan masukkan key tersebut:
+   ```env
+   GROQ_API_KEY=your_actual_key_here
+   ```
+4. **Selesai!** Fitur Chatbot akan langsung berfungsi setelah API Key dimasukkan dan server dijalankan ulang (`npm run dev`).
