@@ -71,20 +71,20 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="mt-16 flex justify-center items-center gap-2">
+              <div className="mt-16 flex flex-wrap justify-center items-center gap-2 sm:gap-4">
                 {currentPage > 1 ? (
-                  <Link href={`/blog?page=${currentPage - 1}`} className="flex items-center justify-center h-10 px-4 rounded-md border bg-white text-slate-700 hover:bg-slate-50 transition-colors">
-                    <ArrowLeft className="h-4 w-4 mr-2" />
-                    Sebelumnya
+                  <Link href={`/blog?page=${currentPage - 1}`} className="flex items-center justify-center h-10 px-3 sm:px-4 rounded-md border bg-white text-slate-700 hover:bg-slate-50 transition-colors">
+                    <ArrowLeft className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Sebelumnya</span>
                   </Link>
                 ) : (
-                  <button disabled className="flex items-center justify-center h-10 px-4 rounded-md border bg-slate-50 text-slate-400 cursor-not-allowed">
-                    <ArrowLeft className="h-4 w-4 mr-2" />
-                    Sebelumnya
+                  <button disabled className="flex items-center justify-center h-10 px-3 sm:px-4 rounded-md border bg-slate-50 text-slate-400 cursor-not-allowed">
+                    <ArrowLeft className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Sebelumnya</span>
                   </button>
                 )}
                 
-                <div className="flex items-center gap-1 mx-2">
+                <div className="flex flex-wrap items-center justify-center gap-1">
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                     <Link 
                       key={page}
@@ -101,14 +101,14 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                 </div>
 
                 {currentPage < totalPages ? (
-                  <Link href={`/blog?page=${currentPage + 1}`} className="flex items-center justify-center h-10 px-4 rounded-md border bg-white text-slate-700 hover:bg-slate-50 transition-colors">
-                    Selanjutnya
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                  <Link href={`/blog?page=${currentPage + 1}`} className="flex items-center justify-center h-10 px-3 sm:px-4 rounded-md border bg-white text-slate-700 hover:bg-slate-50 transition-colors">
+                    <span className="hidden sm:inline">Selanjutnya</span>
+                    <ArrowRight className="h-4 w-4 sm:ml-2" />
                   </Link>
                 ) : (
-                  <button disabled className="flex items-center justify-center h-10 px-4 rounded-md border bg-slate-50 text-slate-400 cursor-not-allowed">
-                    Selanjutnya
-                    <ArrowRight className="h-4 w-4 ml-2" />
+                  <button disabled className="flex items-center justify-center h-10 px-3 sm:px-4 rounded-md border bg-slate-50 text-slate-400 cursor-not-allowed">
+                    <span className="hidden sm:inline">Selanjutnya</span>
+                    <ArrowRight className="h-4 w-4 sm:ml-2" />
                   </button>
                 )}
               </div>
