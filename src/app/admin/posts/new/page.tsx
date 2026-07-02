@@ -1,52 +1,56 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { createPost } from '@/lib/db';
+import { createPost } from '@/app/actions/posts';
 import { supabase } from '@/lib/supabase';
 
 export default function NewPostPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState<string>('');
 
-  const [formData, setFormData] = useState({
-    title: '',
-    imageUrl: '',
-    content: ''
-  });
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setUserId(user.id);
+    });
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+    if (!userId) {
+      alert("Memuat data sesi... Harap tunggu sebentar.");
+      return;
+    }
     
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        throw new Error('Not authenticated');
-      }
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+    
+    // Validasi Sederhana
+    const title = formData.get('title') as string;
+    const content = formData.get('content') as string;
+    
+    if (!title.trim() || !content.trim()) {
+      alert("Judul dan Konten tidak boleh kosong!");
+      setLoading(false);
+      return;
+    }
 
-      await createPost({
-        title: formData.title,
-        image_url: formData.imageUrl || 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80',
-        content: formData.content,
-        author_id: user.id
-      });
+    const res = await createPost(userId, formData);
+    
+    if (res.success) {
+      alert(res.message);
       router.push('/admin/posts');
-    } catch (error) {
-      console.error('Failed to create post:', error);
-      alert('Gagal menyimpan artikel.');
+    } else {
+      alert(res.message);
       setLoading(false);
     }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
   return (
@@ -62,31 +66,39 @@ export default function NewPostPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="title">Judul Artikel</Label>
-            <Input id="title" required placeholder="Cth: 5 Tren Desain Rumah Minimalis 2024" value={formData.title} onChange={handleChange} />
+            <Input name="title" id="title" required placeholder="Cth: 5 Tren Desain Rumah Minimalis 2024" />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="imageUrl">URL Gambar Thumbnail</Label>
-            <Input id="imageUrl" placeholder="https://..." value={formData.imageUrl} onChange={handleChange} />
-            <p className="text-xs text-slate-500">Gunakan rasio 16:9 untuk hasil terbaik.</p>
+            <Label htmlFor="image_url">URL Gambar Thumbnail</Label>
+            <Input name="image_url" id="image_url" placeholder="https://..." />
+            <p className="text-xs text-slate-500">Gunakan rasio 16:9 untuk hasil terbaik. (Kosongkan untuk gambar bawaan)</p>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="content">Konten (HTML)</Label>
             <Textarea 
+              name="content"
               id="content" 
               required 
               placeholder="<p>Mulai menulis di sini...</p>"
               className="min-h-[300px] font-mono text-sm"
-              value={formData.content}
-              onChange={handleChange}
             />
             <p className="text-xs text-slate-500">Anda dapat menggunakan tag HTML standar seperti &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, dll.</p>
           </div>
 
           <div className="pt-4 flex justify-end">
             <Button type="submit" disabled={loading} className="bg-blue-900 hover:bg-blue-800 text-white">
-              <Save className="mr-2 h-4 w-4" /> {loading ? 'Menyimpan...' : 'Simpan & Publikasikan'}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Menyimpan...
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" /> Simpan sebagai Draft
+                </>
+              )}
             </Button>
           </div>
         </form>
