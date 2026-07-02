@@ -5,6 +5,7 @@ import { submitTestimonial } from '@/app/actions/testimonials';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Star } from 'lucide-react';
 
 export function TestimonialForm() {
@@ -24,11 +25,23 @@ export function TestimonialForm() {
       <h3 className="text-2xl font-bold mb-6">Bagikan Pengalaman Anda</h3>
       <form action={handleAction} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-1">Nama / Asal Kota</label>
+          <label htmlFor="name" className="block text-sm font-medium mb-1">Nama / Asal Kota <span className="text-red-500">*</span></label>
           <Input id="name" name="name" placeholder="Cth: Budi Santoso, Jakarta" required minLength={2} maxLength={50} />
         </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium mb-1">Email Address (Opsional)</label>
+            <Input id="email" name="email" type="email" placeholder="budi@example.com" />
+          </div>
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium mb-1">Phone Number (Opsional)</label>
+            <Input id="phone" name="phone" type="tel" placeholder="+62 812-3456-7890" maxLength={20} />
+          </div>
+        </div>
+
         <div>
-          <label htmlFor="content" className="block text-sm font-medium mb-1">Ulasan Anda</label>
+          <label htmlFor="content" className="block text-sm font-medium mb-1">Ulasan Anda <span className="text-red-500">*</span></label>
           <Textarea 
             id="content" 
             name="content" 
@@ -38,6 +51,18 @@ export function TestimonialForm() {
             minLength={10} 
             maxLength={500} 
           />
+        </div>
+        
+        <div className="flex items-start space-x-2 pt-2">
+          <Checkbox id="is_subscribed" name="is_subscribed" />
+          <div className="grid gap-1.5 leading-none">
+            <label
+              htmlFor="is_subscribed"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-600"
+            >
+              Saya setuju untuk menerima pembaruan, buletin, dan penawaran dari GriyaReka via email.
+            </label>
+          </div>
         </div>
         
         {status && (

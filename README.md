@@ -88,3 +88,12 @@ Before clicking "Deploy", you must configure the environment variables so Vercel
 
 ### 4. Deploy
 Click **Deploy**. Vercel will automatically build and deploy your application. Once finished, you will be provided with a live URL!
+
+## Langkah Selanjutnya: Pengiriman Email Otomatis
+
+Untuk mengubah fitur Testimonial menjadi alat Lead Generation yang kuat, Anda dapat mengintegrasikan Resend untuk mengirimkan email otomatis (misalnya, ucapan terima kasih karena telah berlangganan).
+
+1. Daftar di [Resend.com](https://resend.com) untuk mendapatkan API Key gratis.
+2. Instal library-nya di terminal: `npm install resend`
+3. Masukkan API Key ke dalam `.env.local` kamu (misal: `RESEND_API_KEY=re_123456789`).
+4. Ganti komentar `// TODO` yang dibuat di file Server Action (`src/app/actions/testimonials.ts`) dengan kode pemanggilan Resend sederhana.

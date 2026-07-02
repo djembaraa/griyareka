@@ -116,7 +116,7 @@ export default async function HomePage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
               >
-                <Card className="border-none shadow-lg hover:shadow-xl transition-shadow h-full">
+                <Card className="border-none shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer h-full">
                   <CardHeader>
                     <div className={`h-12 w-12 rounded-lg ${service.bg} flex items-center justify-center mb-4`}>
                       {service.icon}

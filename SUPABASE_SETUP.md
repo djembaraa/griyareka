@@ -110,8 +110,11 @@ CREATE POLICY "Only authenticated users can delete properties" ON public.propert
 CREATE TABLE public.testimonials (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
+  email TEXT,
+  phone TEXT,
   content TEXT NOT NULL,
   is_published BOOLEAN DEFAULT false NOT NULL,
+  is_subscribed BOOLEAN DEFAULT false NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

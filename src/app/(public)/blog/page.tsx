@@ -32,7 +32,7 @@ export default async function BlogPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
             >
-              <Link href={`/blog/${post.id}`} className="group flex flex-col h-full bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all border overflow-hidden">
+              <Link href={`/blog/${post.id}`} className="group flex flex-col h-full bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer border overflow-hidden">
                 <div className="relative h-64 w-full overflow-hidden">
                   <Image
                     src={post.image_url || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80'}

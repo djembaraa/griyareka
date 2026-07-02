@@ -35,7 +35,7 @@ export default async function PropertiesPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
             >
-              <Card className="overflow-hidden group hover:shadow-xl transition-shadow border-none shadow-md h-full">
+              <Card className="overflow-hidden group hover:shadow-xl transition-all hover:-translate-y-1 cursor-pointer border-none shadow-md h-full">
                 <div className="relative h-64 w-full overflow-hidden">
                   <Image
                     src={property.image_url}

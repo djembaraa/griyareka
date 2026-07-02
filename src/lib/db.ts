@@ -167,8 +167,11 @@ export async function deleteProperty(id: string) {
 export type Testimonial = {
   id: string;
   name: string;
+  email?: string | null;
+  phone?: string | null;
   content: string;
   is_published: boolean;
+  is_subscribed: boolean;
   created_at: string;
 };
 
