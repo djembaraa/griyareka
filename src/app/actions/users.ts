@@ -80,7 +80,11 @@ export async function inviteAdmin(currentUserId: string, formData: FormData) {
 
     if (authError || !authData.user) {
       console.error("Auth invite error:", authError);
-      return { success: false, message: authError?.message || 'Gagal mengirim undangan ke email.' };
+      let errorMsg = authError?.message;
+      if (errorMsg === '{}') {
+        errorMsg = 'Gagal menghubungi server otentikasi (Error 500). Pastikan pengaturan Email/SMTP dan Redirect URL di Dashboard Supabase sudah dikonfigurasi dengan benar.';
+      }
+      return { success: false, message: errorMsg || 'Gagal mengirim undangan ke email.' };
     }
 
     // 2. Insert into profiles with display_name 'Pending'
