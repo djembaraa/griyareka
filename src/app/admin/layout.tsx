@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, User, LogOut, Home } from 'lucide-react';
+import { LayoutDashboard, FileText, User, LogOut, Home, MessageSquare } from 'lucide-react';
 
 export default function AdminLayout({
   children,
@@ -20,6 +20,7 @@ export default function AdminLayout({
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Properties', href: '/admin/properties', icon: Home },
     { name: 'Posts', href: '/admin/posts', icon: FileText },
+    { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
     { name: 'Profile', href: '/admin/profile', icon: User },
   ];
 

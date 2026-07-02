@@ -9,12 +9,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { getPosts } from '@/lib/db';
+import { getPosts, getPublishedTestimonials } from '@/lib/db';
 import { MotionDiv, MotionSection } from '@/components/MotionDiv';
+import { TestimonialForm } from '@/components/TestimonialForm';
+import DOMPurify from 'isomorphic-dompurify';
 
 export default async function HomePage() {
   const posts = await getPosts();
   const recentPosts = posts.slice(0, 3);
+  const testimonials = await getPublishedTestimonials();
 
   const slideUp = {
     initial: { opacity: 0, y: 30 },
@@ -174,7 +177,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials & FAQ */}
+      {/* Testimonials & Form */}
       <section className="bg-blue-950 py-20 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -182,74 +185,78 @@ export default async function HomePage() {
             {/* Testimonials */}
             <MotionDiv {...slideUp}>
               <h2 className="text-3xl font-bold mb-8">Apa Kata Klien Kami</h2>
-              <div className="space-y-6">
-                {[
-                  { name: "Budi Santoso, Jakarta", text: "Proses pembangunan berjalan sangat transparan dan hasilnya melebihi ekspektasi. Desain modernnya sangat pas dengan selera keluarga kami." },
-                  { name: "Sarah Wijaya, Tangerang Selatan", text: "Integrasi smart home yang ditawarkan GriyaReka sangat praktis dan rapi. Tim sangat profesional." }
-                ].map((testi, idx) => (
-                  <MotionDiv 
-                    key={idx}
-                    className="bg-white/10 p-6 rounded-2xl backdrop-blur border border-white/10"
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: idx * 0.2 }}
-                  >
-                    <div className="flex gap-1 text-orange-400 mb-4">
-                      <Star className="fill-current w-5 h-5" />
-                      <Star className="fill-current w-5 h-5" />
-                      <Star className="fill-current w-5 h-5" />
-                      <Star className="fill-current w-5 h-5" />
-                      <Star className="fill-current w-5 h-5" />
-                    </div>
-                    <p className="text-gray-200 mb-4 italic">"{testi.text}"</p>
-                    <p className="font-semibold">- {testi.name}</p>
-                  </MotionDiv>
-                ))}
-              </div>
+              {testimonials.length === 0 ? (
+                <p className="text-gray-300 italic">Belum ada ulasan yang dipublikasikan.</p>
+              ) : (
+                <div className="space-y-6">
+                  {testimonials.map((testi, idx) => (
+                    <MotionDiv 
+                      key={testi.id}
+                      className="bg-white/10 p-6 rounded-2xl backdrop-blur border border-white/10"
+                      initial={{ opacity: 0, x: -30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: idx * 0.2 }}
+                    >
+                      <div className="flex gap-1 text-orange-400 mb-4">
+                        <Star className="fill-current w-5 h-5" />
+                        <Star className="fill-current w-5 h-5" />
+                        <Star className="fill-current w-5 h-5" />
+                        <Star className="fill-current w-5 h-5" />
+                        <Star className="fill-current w-5 h-5" />
+                      </div>
+                      {/* Properly sanitized to prevent XSS */}
+                      <div 
+                        className="text-gray-200 mb-4 italic whitespace-pre-wrap"
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(testi.content) }}
+                      />
+                      <p className="font-semibold">- {DOMPurify.sanitize(testi.name)}</p>
+                    </MotionDiv>
+                  ))}
+                </div>
+              )}
             </MotionDiv>
 
-            {/* FAQ */}
+            {/* Public Form */}
             <MotionDiv {...slideUp}>
-              <h2 className="text-3xl font-bold mb-8">FAQ (Pertanyaan Umum)</h2>
-              <Accordion className="w-full">
-                <AccordionItem value="item-1" className="border-white/20">
-                  <AccordionTrigger className="hover:text-orange-400 text-left">
-                    Berapa lama estimasi proses pembangunan rumah?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-300">
-                    Estimasi waktu bervariasi antara 6 hingga 12 bulan, tergantung pada ukuran, kompleksitas desain, dan faktor cuaca. Kami akan memberikan jadwal terperinci sebelum proyek dimulai.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-2" className="border-white/20">
-                  <AccordionTrigger className="hover:text-orange-400 text-left">
-                    Apakah GriyaReka melayani renovasi?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-300">
-                    Ya, kami menyediakan layanan renovasi total maupun parsial, terutama untuk meningkatkan fungsionalitas dan menambahkan fitur smart home pada rumah yang sudah ada.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-3" className="border-white/20">
-                  <AccordionTrigger className="hover:text-orange-400 text-left">
-                    Bagaimana sistem pembayarannya?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-300">
-                    Sistem pembayaran dilakukan secara bertahap (termin) sesuai dengan progress pembangunan yang disepakati bersama dalam kontrak kerja.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-4" className="border-white/20">
-                  <AccordionTrigger className="hover:text-orange-400 text-left">
-                    Apakah desain bisa disesuaikan dengan budget?
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-300">
-                    Tentu. Tim arsitek kami akan berdiskusi secara mendalam untuk merancang rumah impian Anda dengan mempertimbangkan budget yang tersedia tanpa mengorbankan kualitas.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+              <TestimonialForm />
             </MotionDiv>
 
           </div>
         </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+        <MotionDiv {...slideUp} className="text-center mb-10">
+          <h2 className="text-3xl font-bold text-slate-900">FAQ (Pertanyaan Umum)</h2>
+        </MotionDiv>
+        <Accordion className="w-full">
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="text-left font-semibold">
+              Berapa lama estimasi proses pembangunan rumah?
+            </AccordionTrigger>
+            <AccordionContent className="text-slate-600 text-base leading-relaxed">
+              Estimasi waktu bervariasi antara 6 hingga 12 bulan, tergantung pada ukuran, kompleksitas desain, dan faktor cuaca. Kami akan memberikan jadwal terperinci sebelum proyek dimulai.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger className="text-left font-semibold">
+              Apakah GriyaReka melayani renovasi?
+            </AccordionTrigger>
+            <AccordionContent className="text-slate-600 text-base leading-relaxed">
+              Ya, kami menyediakan layanan renovasi total maupun parsial, terutama untuk meningkatkan fungsionalitas dan menambahkan fitur smart home pada rumah yang sudah ada.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-3">
+            <AccordionTrigger className="text-left font-semibold">
+              Bagaimana sistem pembayarannya?
+            </AccordionTrigger>
+            <AccordionContent className="text-slate-600 text-base leading-relaxed">
+              Sistem pembayaran dilakukan secara bertahap (termin) sesuai dengan progress pembangunan yang disepakati bersama dalam kontrak kerja.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </section>
 
     </div>

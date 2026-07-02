@@ -105,6 +105,33 @@ CREATE POLICY "Only authenticated users can update properties" ON public.propert
 
 CREATE POLICY "Only authenticated users can delete properties" ON public.properties
   FOR DELETE USING (auth.role() = 'authenticated');
+
+-- Testimonials table for Moderated Testimonials System
+CREATE TABLE public.testimonials (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  content TEXT NOT NULL,
+  is_published BOOLEAN DEFAULT false NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for testimonials
+ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Published testimonials are viewable by everyone." ON public.testimonials
+  FOR SELECT USING (is_published = true);
+  
+CREATE POLICY "Admin can view all testimonials." ON public.testimonials
+  FOR SELECT USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Anyone can submit a testimonial." ON public.testimonials
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Only authenticated users can update testimonials." ON public.testimonials
+  FOR UPDATE USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Only authenticated users can delete testimonials." ON public.testimonials
+  FOR DELETE USING (auth.role() = 'authenticated');
 ```
 
 ## 4. Create the First Admin User

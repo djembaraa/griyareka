@@ -159,3 +159,63 @@ export async function deleteProperty(id: string) {
   if (error) throw error;
   return true;
 }
+
+// ==========================================
+// SUPABASE TESTIMONIALS
+// ==========================================
+
+export type Testimonial = {
+  id: string;
+  name: string;
+  content: string;
+  is_published: boolean;
+  created_at: string;
+};
+
+export async function getPublishedTestimonials(): Promise<Testimonial[]> {
+  const { data, error } = await supabase
+    .from('testimonials')
+    .select('*')
+    .eq('is_published', true)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching published testimonials:', error);
+    return [];
+  }
+  return data as Testimonial[];
+}
+
+export async function getAllTestimonials(): Promise<Testimonial[]> {
+  const { data, error } = await supabase
+    .from('testimonials')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching all testimonials:', error);
+    return [];
+  }
+  return data as Testimonial[];
+}
+
+export async function updateTestimonialStatus(id: string, is_published: boolean) {
+  const { data, error } = await supabase
+    .from('testimonials')
+    .update({ is_published })
+    .eq('id', id)
+    .select();
+    
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteTestimonial(id: string) {
+  const { error } = await supabase
+    .from('testimonials')
+    .delete()
+    .eq('id', id);
+    
+  if (error) throw error;
+  return true;
+}
