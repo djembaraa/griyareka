@@ -1,15 +1,19 @@
 import Link from 'next/link';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getPaginatedPosts } from '@/lib/db';
+import { getPaginatedPosts, getAuthors } from '@/lib/db';
 import { PaginationControls } from '@/components/PaginationControls';
+import { PostFilters } from '@/components/admin/PostFilters';
 
-export default async function AdminPostsPage(props: { searchParams: Promise<{ page?: string }> }) {
+export default async function AdminPostsPage(props: { searchParams: Promise<{ page?: string, authorId?: string, sortBy?: string }> }) {
   const searchParams = await props.searchParams;
   const page = parseInt(searchParams.page || '1', 10) || 1;
+  const authorId = searchParams.authorId || 'all';
+  const sortBy = searchParams.sortBy || 'newest';
   const limit = 10;
   
-  const { data: posts, count } = await getPaginatedPosts(page, limit);
+  const authors = await getAuthors();
+  const { data: posts, count } = await getPaginatedPosts(page, limit, authorId, sortBy);
   const totalPages = Math.ceil(count / limit);
 
   return (
@@ -25,6 +29,8 @@ export default async function AdminPostsPage(props: { searchParams: Promise<{ pa
           </Button>
         </Link>
       </div>
+
+      <PostFilters authors={authors} />
 
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
         <div className="overflow-x-auto">
@@ -64,7 +70,7 @@ export default async function AdminPostsPage(props: { searchParams: Promise<{ pa
               {posts.length === 0 && (
                 <tr>
                   <td colSpan={4} className="p-8 text-center text-slate-500">
-                    Belum ada artikel. Silakan buat artikel baru.
+                    Belum ada artikel yang cocok dengan filter.
                   </td>
                 </tr>
               )}
