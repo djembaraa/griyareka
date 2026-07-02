@@ -11,10 +11,10 @@ export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   
-  const { messages, status, sendMessage } = useChat({
-    messages: [
-      { id: '1', role: 'assistant', parts: [{ type: 'text', text: 'Halo! Saya CS GriyaReka. Ada yang bisa kami bantu seputar layanan GriyaReka?' }] }
-    ] as UIMessage[]
+  const { messages, status, append } = useChat({
+    initialMessages: [
+      { id: '1', role: 'assistant', content: 'Halo! Saya CS GriyaReka. Ada yang bisa kami bantu seputar layanan GriyaReka?' }
+    ]
   });
   
   const isLoading = status === 'submitted' || status === 'streaming';
@@ -29,7 +29,7 @@ export function ChatbotWidget() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
-    sendMessage({ text: input });
+    append({ role: 'user', content: input });
     setInput('');
   };
 
@@ -55,9 +55,7 @@ export function ChatbotWidget() {
                     ? 'bg-orange-600 text-white rounded-br-none shadow-sm' 
                     : 'bg-white border text-slate-800 rounded-bl-none shadow-sm'
                 }`}>
-                  {msg.parts?.map((p, i) => (
-                    p.type === 'text' ? <span key={i}>{p.text}</span> : null
-                  ))}
+                  {msg.content}
                 </div>
               </div>
             ))}
