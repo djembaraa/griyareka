@@ -10,9 +10,14 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
+    const coreMessages = messages.map((msg: any) => ({
+      role: msg.role,
+      content: msg.content || (msg.parts?.map((p: any) => p.text).join('') || '')
+    }));
+
     const result = streamText({
       model: groq('llama-3.1-8b-instant'),
-      messages,
+      messages: coreMessages,
       system: `Kamu adalah CS GriyaReka, sebuah AI asisten virtual untuk perusahaan developer properti GriyaReka. 
 Kamu bertugas melayani pelanggan dengan sopan, persuasif, dan profesional.
 Gunakan HANYA Bahasa Indonesia yang baik, ramah, dan mudah dimengerti.

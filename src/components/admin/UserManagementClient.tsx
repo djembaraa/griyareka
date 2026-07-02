@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { UserProfile, inviteAdmin, updateUser, deleteUser } from '@/app/actions/users';
+import { UserProfile, createAdmin, updateUser, deleteUser } from '@/app/actions/users';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,7 +28,7 @@ export function UserManagementClient({ initialUsers }: { initialUsers: UserProfi
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
-    const res = await inviteAdmin(currentUserId, formData);
+    const res = await createAdmin(currentUserId, formData);
     if (res.success) {
       alert(res.message);
       setIsAddOpen(false);
@@ -70,8 +70,10 @@ export function UserManagementClient({ initialUsers }: { initialUsers: UserProfi
     <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
       <div className="p-4 flex justify-end">
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-          <DialogTrigger render={<Button className="bg-slate-900 text-white hover:bg-slate-800" />}>
-            Tambah User
+          <DialogTrigger asChild>
+            <Button className="bg-slate-900 text-white hover:bg-slate-800">
+              Tambah User
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -79,8 +81,16 @@ export function UserManagementClient({ initialUsers }: { initialUsers: UserProfi
             </DialogHeader>
             <form onSubmit={handleAdd} className="space-y-4 mt-4">
               <div className="space-y-2">
+                <Label>Nama Lengkap</Label>
+                <Input name="display_name" required placeholder="Budi Santoso" />
+              </div>
+              <div className="space-y-2">
                 <Label>Email</Label>
                 <Input name="email" type="email" required placeholder="staf@griyareka.id" />
+              </div>
+              <div className="space-y-2">
+                <Label>Password Awal</Label>
+                <Input name="password" type="password" required placeholder="Minimal 6 karakter" minLength={6} />
               </div>
               <div className="space-y-2">
                 <Label>Role</Label>
@@ -97,7 +107,7 @@ export function UserManagementClient({ initialUsers }: { initialUsers: UserProfi
                 </Select>
               </div>
               <Button type="submit" disabled={loading} className="w-full bg-blue-900 hover:bg-blue-800 text-white">
-                {loading ? 'Mengirim Undangan...' : 'Kirim Undangan'}
+                {loading ? 'Menyimpan...' : 'Buat Akun'}
               </Button>
             </form>
           </DialogContent>
