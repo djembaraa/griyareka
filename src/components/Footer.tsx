@@ -58,7 +58,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 border-t border-blue-900 pt-8 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} GriyaReka. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Djembar Arafat. All rights reserved.</p>
         </div>
       </div>
     </footer>
