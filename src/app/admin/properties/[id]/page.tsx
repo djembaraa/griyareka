@@ -8,25 +8,70 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { getPropertyById, updateProperty } from '@/lib/db';
 
 export default function EditPropertyPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [id, setId] = useState<string>('');
+  
+  const [formData, setFormData] = useState({
+    title: '',
+    price: '',
+    imageUrl: '',
+    bedrooms: '',
+    bathrooms: '',
+    description: ''
+  });
 
   useEffect(() => {
-    params.then(p => setId(p.id));
+    params.then(p => {
+      setId(p.id);
+      getPropertyById(p.id).then(property => {
+        if (property) {
+          setFormData({
+            title: property.title,
+            price: property.price.toString(),
+            imageUrl: property.image_url,
+            bedrooms: property.bedrooms.toString(),
+            bathrooms: property.bathrooms.toString(),
+            description: property.description
+          });
+        }
+        setFetching(false);
+      });
+    });
   }, [params]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Mock save
-    setTimeout(() => {
-      setLoading(false);
+    
+    try {
+      const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      await updateProperty(id, {
+        title: formData.title,
+        slug,
+        description: formData.description,
+        price: Number(formData.price),
+        bedrooms: Number(formData.bedrooms),
+        bathrooms: Number(formData.bathrooms),
+        image_url: formData.imageUrl || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80',
+      });
       router.push('/admin/properties');
-    }, 1000);
+    } catch (error) {
+      console.error('Failed to update property:', error);
+      alert('Gagal menyimpan properti.');
+      setLoading(false);
+    }
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  if (fetching) return <div className="p-8 text-center">Loading...</div>;
 
   return (
     <div className="max-w-4xl">
@@ -42,27 +87,27 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="title">Nama Properti</Label>
-              <Input id="title" required defaultValue="Tipe 45/90 Minimalis Modern" />
+              <Input id="title" required value={formData.title} onChange={handleChange} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="price">Harga (Rp)</Label>
-              <Input id="price" type="number" required defaultValue="850000000" />
+              <Input id="price" type="number" required value={formData.price} onChange={handleChange} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="imageUrl">URL Gambar</Label>
-              <Input id="imageUrl" defaultValue="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80" />
+              <Input id="imageUrl" value={formData.imageUrl} onChange={handleChange} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="bedrooms">Kamar Tidur</Label>
-              <Input id="bedrooms" type="number" required defaultValue="2" />
+              <Input id="bedrooms" type="number" required value={formData.bedrooms} onChange={handleChange} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="bathrooms">Kamar Mandi</Label>
-              <Input id="bathrooms" type="number" required defaultValue="1" />
+              <Input id="bathrooms" type="number" required value={formData.bathrooms} onChange={handleChange} />
             </div>
 
             <div className="space-y-2 md:col-span-2">
@@ -70,8 +115,9 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
               <Textarea 
                 id="description" 
                 required 
-                defaultValue="Rumah compact dengan desain fasad modern minimalis. Sangat cocok untuk keluarga muda dengan ruang terbuka yang efisien."
                 className="min-h-[150px]"
+                value={formData.description}
+                onChange={handleChange}
               />
             </div>
           </div>

@@ -8,25 +8,59 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { getPostById, updatePost } from '@/lib/db';
 
 export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [id, setId] = useState<string>('');
 
+  const [formData, setFormData] = useState({
+    title: '',
+    imageUrl: '',
+    content: ''
+  });
+
   useEffect(() => {
-    params.then(p => setId(p.id));
+    params.then(p => {
+      setId(p.id);
+      getPostById(p.id).then(post => {
+        if (post) {
+          setFormData({
+            title: post.title,
+            imageUrl: post.image_url,
+            content: post.content
+          });
+        }
+        setFetching(false);
+      });
+    });
   }, [params]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Mock save
-    setTimeout(() => {
-      setLoading(false);
+    
+    try {
+      await updatePost(id, {
+        title: formData.title,
+        image_url: formData.imageUrl || 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80',
+        content: formData.content,
+      });
       router.push('/admin/posts');
-    }, 1000);
+    } catch (error) {
+      console.error('Failed to update post:', error);
+      alert('Gagal menyimpan perubahan.');
+      setLoading(false);
+    }
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  if (fetching) return <div className="p-8 text-center">Loading...</div>;
 
   return (
     <div className="max-w-4xl">
@@ -41,12 +75,12 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="title">Judul Artikel</Label>
-            <Input id="title" required defaultValue="The Future of Sustainable Home Building" />
+            <Input id="title" required value={formData.title} onChange={handleChange} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="imageUrl">URL Gambar Thumbnail</Label>
-            <Input id="imageUrl" defaultValue="https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80" />
+            <Input id="imageUrl" value={formData.imageUrl} onChange={handleChange} />
             <p className="text-xs text-slate-500">Gunakan rasio 16:9 untuk hasil terbaik.</p>
           </div>
 
@@ -55,10 +89,11 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             <Textarea 
               id="content" 
               required 
-              defaultValue="<p>Sustainable home building is no longer just a trend; it is the standard.</p>"
               className="min-h-[300px] font-mono text-sm"
+              value={formData.content}
+              onChange={handleChange}
             />
-            <p className="text-xs text-slate-500">Anda dapat menggunakan tag HTML standar.</p>
+            <p className="text-xs text-slate-500">Anda dapat menggunakan tag HTML standar seperti &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, dll.</p>
           </div>
 
           <div className="pt-4 flex justify-end">

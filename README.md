@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GriyaReka Web Application
 
-## Getting Started
+GriyaReka is a professional Home Developer Company Profile web application equipped with an integrated Content Management System (CMS) for managing properties and blog posts. 
 
-First, run the development server:
+> [!WARNING]
+> **Academic Laboratory Purpose**: This project was developed as an academic laboratory environment for testing Cross-Site Scripting (XSS) vulnerabilities and mitigations. Specifically, the Blog feature utilizes `isomorphic-dompurify` to sanitize HTML inputs and defend against malicious script injection.
+
+## Project Overview
+This application is built with modern, cutting-edge web technologies to ensure optimal performance, security, and an excellent user experience.
+
+**Core Tech Stack:**
+- **Frontend**: Next.js 16 (App Router), React, TypeScript
+- **Styling**: Tailwind CSS v3, Shadcn UI, Framer Motion (for premium UI animations)
+- **Backend / Database**: Supabase (PostgreSQL, Supabase Auth)
+- **Icons**: Lucide React
+
+## Local Setup
+
+### 1. Prerequisites
+- Node.js (v18.17 or higher)
+- npm or yarn or pnpm
+- A live Supabase project
+
+### 2. Installation
+Clone the repository and install dependencies:
+
+```bash
+git clone <repository-url>
+cd griyareka-web
+npm install
+```
+
+### 3. Supabase Integration
+**CRITICAL**: You must set up your Supabase database before running the local development server, or the application will throw errors due to missing data connections.
+
+Please refer to the complete, step-by-step instructions in the [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) file. This includes:
+1. Setting up your `.env.local` variables (`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
+2. Executing the required SQL schema.
+3. Creating the first Admin user.
+
+### 4. Running the Development Server
+Once `.env.local` is configured:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage Guide
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Public Navigation
+- **Home (`/`)**: Main landing page showcasing premium design, services, and testimonials.
+- **Properties (`/properties`)**: Property catalog displaying available homes (mocked or live data). Click "Lihat Detail" for specific property views.
+- **Blog (`/blog`)**: Company news and architecture tips. Click a card to read the full HTML-sanitized article.
+- **About (`/about`) & Services (`/services`)**: Static company information pages.
 
-## Learn More
+### Admin CMS Navigation
+- Navigate to **[http://localhost:3000/admin](http://localhost:3000/admin)** or `/admin/login`.
+- Log in using the credentials you created in the Supabase Dashboard.
+- **Dashboard**: High-level overview of the CMS.
+- **Properties**: Create, edit, and delete properties showcased in the public catalog.
+- **Posts**: Create, edit, and delete HTML blog posts. All rich text input is sanitized on the server before rendering.
 
-To learn more about Next.js, take a look at the following resources:
+## Vercel Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Deploying the Next.js application to Vercel is highly recommended.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 1. Prepare for Deployment
+1. Ensure your code is committed to a Git repository (GitHub, GitLab, or Bitbucket).
+2. Create a dedicated branch for deployment using a hyphen naming convention. For example:
+   ```bash
+   git checkout -b deployment-griyareka
+   git push -u origin deployment-griyareka
+   ```
 
-## Deploy on Vercel
+### 2. Deploy via Vercel Dashboard
+1. Log in to [Vercel](https://vercel.com).
+2. Click **Add New...** -> **Project**.
+3. Import your Git repository.
+4. Select the `deployment-griyareka` branch (or `main`/`master` if you prefer).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. Configure Environment Variables
+Before clicking "Deploy", you must configure the environment variables so Vercel can connect to your Supabase project:
+1. In the "Environment Variables" section, add:
+   - Name: `NEXT_PUBLIC_SUPABASE_URL` | Value: *Your Supabase URL*
+   - Name: `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Value: *Your Supabase Anon Key*
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Deploy
+Click **Deploy**. Vercel will automatically build and deploy your application. Once finished, you will be provided with a live URL!

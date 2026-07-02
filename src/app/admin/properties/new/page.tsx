@@ -8,19 +8,46 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { createProperty } from '@/lib/db';
 
 export default function NewPropertyPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    title: '',
+    price: '',
+    imageUrl: '',
+    bedrooms: '',
+    bathrooms: '',
+    description: ''
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Mock save
-    setTimeout(() => {
-      setLoading(false);
+    
+    try {
+      const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      await createProperty({
+        title: formData.title,
+        slug,
+        description: formData.description,
+        price: Number(formData.price),
+        bedrooms: Number(formData.bedrooms),
+        bathrooms: Number(formData.bathrooms),
+        image_url: formData.imageUrl || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80',
+      });
       router.push('/admin/properties');
-    }, 1000);
+    } catch (error) {
+      console.error('Failed to create property:', error);
+      alert('Gagal menyimpan properti.');
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
   return (
@@ -37,27 +64,27 @@ export default function NewPropertyPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="title">Nama Properti</Label>
-              <Input id="title" required placeholder="Cth: Tipe 45/90 Minimalis" />
+              <Input id="title" required placeholder="Cth: Tipe 45/90 Minimalis" value={formData.title} onChange={handleChange} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="price">Harga (Rp)</Label>
-              <Input id="price" type="number" required placeholder="850000000" />
+              <Input id="price" type="number" required placeholder="850000000" value={formData.price} onChange={handleChange} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="imageUrl">URL Gambar</Label>
-              <Input id="imageUrl" placeholder="https://..." />
+              <Input id="imageUrl" placeholder="https://..." value={formData.imageUrl} onChange={handleChange} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="bedrooms">Kamar Tidur</Label>
-              <Input id="bedrooms" type="number" required placeholder="2" />
+              <Input id="bedrooms" type="number" required placeholder="2" value={formData.bedrooms} onChange={handleChange} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="bathrooms">Kamar Mandi</Label>
-              <Input id="bathrooms" type="number" required placeholder="1" />
+              <Input id="bathrooms" type="number" required placeholder="1" value={formData.bathrooms} onChange={handleChange} />
             </div>
 
             <div className="space-y-2 md:col-span-2">
@@ -67,6 +94,8 @@ export default function NewPropertyPage() {
                 required 
                 placeholder="Deskripsikan fitur dan keunggulan rumah ini..."
                 className="min-h-[150px]"
+                value={formData.description}
+                onChange={handleChange}
               />
             </div>
           </div>

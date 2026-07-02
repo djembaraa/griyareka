@@ -8,19 +8,45 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { createPost } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
 
 export default function NewPostPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [formData, setFormData] = useState({
+    title: '',
+    imageUrl: '',
+    content: ''
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Mock save
-    setTimeout(() => {
-      setLoading(false);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('Not authenticated');
+      }
+
+      await createPost({
+        title: formData.title,
+        image_url: formData.imageUrl || 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80',
+        content: formData.content,
+        author_id: user.id
+      });
       router.push('/admin/posts');
-    }, 1000);
+    } catch (error) {
+      console.error('Failed to create post:', error);
+      alert('Gagal menyimpan artikel.');
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
   return (
@@ -36,12 +62,12 @@ export default function NewPostPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="title">Judul Artikel</Label>
-            <Input id="title" required placeholder="Cth: 5 Tren Desain Rumah Minimalis 2024" />
+            <Input id="title" required placeholder="Cth: 5 Tren Desain Rumah Minimalis 2024" value={formData.title} onChange={handleChange} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="imageUrl">URL Gambar Thumbnail</Label>
-            <Input id="imageUrl" placeholder="https://..." />
+            <Input id="imageUrl" placeholder="https://..." value={formData.imageUrl} onChange={handleChange} />
             <p className="text-xs text-slate-500">Gunakan rasio 16:9 untuk hasil terbaik.</p>
           </div>
 
@@ -52,6 +78,8 @@ export default function NewPostPage() {
               required 
               placeholder="<p>Mulai menulis di sini...</p>"
               className="min-h-[300px] font-mono text-sm"
+              value={formData.content}
+              onChange={handleChange}
             />
             <p className="text-xs text-slate-500">Anda dapat menggunakan tag HTML standar seperti &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, dll.</p>
           </div>
