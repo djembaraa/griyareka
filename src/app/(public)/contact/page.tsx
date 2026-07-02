@@ -29,7 +29,7 @@ export default function ContactPage() {
 
       <section className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          
+
           {/* Contact Info & Map */}
           <div className="space-y-12">
             <div>
@@ -47,7 +47,7 @@ export default function ContactPage() {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-blue-50 text-blue-900 rounded-full flex items-center justify-center shrink-0">
                     <Phone className="h-6 w-6" />
@@ -73,7 +73,7 @@ export default function ContactPage() {
             <div className="h-[300px] w-full rounded-2xl overflow-hidden bg-slate-200 shadow-md relative">
               {/* Placeholder for Google Maps iframe */}
               <div className="absolute inset-0 flex items-center justify-center">
-                 <span className="text-slate-400 font-medium">Google Maps iframe Placeholder</span>
+                <span className="text-slate-400 font-medium">Google Maps iframe Placeholder</span>
               </div>
             </div>
           </div>
@@ -81,7 +81,7 @@ export default function ContactPage() {
           {/* Contact Form */}
           <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">Kirim Pesan</h2>
-            
+
             {submitted ? (
               <div className="h-full min-h-[300px] flex flex-col items-center justify-center text-center space-y-4">
                 <CheckCircle2 className="h-16 w-16 text-green-500" />
@@ -96,15 +96,18 @@ export default function ContactPage() {
                   <Label htmlFor="name" className="text-slate-700">Nama Lengkap</Label>
                   <Input id="name" required placeholder="Cth: Budi Santoso" className="h-12" />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-slate-700">Alamat Email</Label>
                   <Input id="email" type="email" required placeholder="Cth: budi@example.com" className="h-12" />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="service" className="text-slate-700">Layanan yang Diminati</Label>
-                  <select id="service" className="flex h-12 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                  <Label htmlFor="service" className="text-slate-700 cursor-pointer">Layanan yang Diminati</Label>
+                  <select
+                    id="service"
+                    className="flex h-12 w-full cursor-pointer items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
                     <option value="">Pilih layanan...</option>
                     <option value="custom-design">Custom Home Design</option>
                     <option value="smart-home">Smart Home Integration</option>
@@ -114,11 +117,11 @@ export default function ContactPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message" className="text-slate-700">Pesan / Kebutuhan Anda</Label>
+                  <Label htmlFor="message" className="text-slate-700 cursor-pointer">Pesan / Kebutuhan Anda</Label>
                   <Textarea id="message" required placeholder="Ceritakan detail kebutuhan pembangunan atau renovasi Anda..." className="min-h-[150px] resize-none" />
                 </div>
 
-                <Button type="submit" className="w-full h-12 bg-orange-600 hover:bg-orange-700 text-white text-base">
+                <Button type="submit" className="w-full h-12 bg-orange-600 hover:bg-orange-700 text-white text-base cursor-pointer">
                   <Send className="mr-2 h-5 w-5" /> Kirim Pesan Sekarang
                 </Button>
               </form>
