@@ -12,6 +12,7 @@ import {
 import { getPosts, getPublishedTestimonials } from '@/lib/db';
 import { MotionDiv, MotionSection } from '@/components/MotionDiv';
 import { TestimonialForm } from '@/components/TestimonialForm';
+import { TestimonialCarousel } from '@/components/TestimonialCarousel';
 import DOMPurify from 'isomorphic-dompurify';
 
 export default async function HomePage() {
@@ -185,36 +186,7 @@ export default async function HomePage() {
             {/* Testimonials */}
             <MotionDiv {...slideUp}>
               <h2 className="text-3xl font-bold mb-8">Apa Kata Klien Kami</h2>
-              {testimonials.length === 0 ? (
-                <p className="text-gray-300 italic">Belum ada ulasan yang dipublikasikan.</p>
-              ) : (
-                <div className="space-y-6">
-                  {testimonials.map((testi, idx) => (
-                    <MotionDiv 
-                      key={testi.id}
-                      className="bg-white/10 p-6 rounded-2xl backdrop-blur border border-white/10"
-                      initial={{ opacity: 0, x: -30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: idx * 0.2 }}
-                    >
-                      <div className="flex gap-1 text-orange-400 mb-4">
-                        <Star className="fill-current w-5 h-5" />
-                        <Star className="fill-current w-5 h-5" />
-                        <Star className="fill-current w-5 h-5" />
-                        <Star className="fill-current w-5 h-5" />
-                        <Star className="fill-current w-5 h-5" />
-                      </div>
-                      {/* Properly sanitized to prevent XSS */}
-                      <div 
-                        className="text-gray-200 mb-4 italic whitespace-pre-wrap"
-                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(testi.content) }}
-                      />
-                      <p className="font-semibold">- {DOMPurify.sanitize(testi.name)}</p>
-                    </MotionDiv>
-                  ))}
-                </div>
-              )}
+              <TestimonialCarousel testimonials={testimonials} />
             </MotionDiv>
 
             {/* Public Form */}
