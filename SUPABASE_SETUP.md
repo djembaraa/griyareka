@@ -18,7 +18,11 @@ Once your project is created and provisioned:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsIn...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsIn...
 ```
+
+> [!CAUTION]
+> The `SUPABASE_SERVICE_ROLE_KEY` is a powerful admin key that bypasses all Row Level Security (RLS). It MUST NEVER be prefixed with `NEXT_PUBLIC_` to prevent it from leaking to the frontend.
 
 ## 3. Apply the Database Schema
 1. In your Supabase Dashboard, navigate to the **SQL Editor** (the terminal icon on the left sidebar).

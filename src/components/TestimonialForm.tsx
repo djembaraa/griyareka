@@ -71,7 +71,7 @@ export function TestimonialForm() {
           </div>
         )}
 
-        <Button type="submit" disabled={isPending} className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+        <Button type="submit" disabled={isPending} className="w-full bg-orange-600 hover:bg-orange-700 text-white cursor-pointer">
           {isPending ? 'Mengirim...' : 'Kirim Ulasan'}
         </Button>
       </form>

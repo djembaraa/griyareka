@@ -233,7 +233,7 @@ export default async function HomePage() {
         </MotionDiv>
         <Accordion className="w-full">
           <AccordionItem value="item-1">
-            <AccordionTrigger className="text-left font-semibold">
+            <AccordionTrigger className="text-left font-semibold cursor-pointer">
               Berapa lama estimasi proses pembangunan rumah?
             </AccordionTrigger>
             <AccordionContent className="text-slate-600 text-base leading-relaxed">
@@ -241,7 +241,7 @@ export default async function HomePage() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger className="text-left font-semibold">
+            <AccordionTrigger className="text-left font-semibold cursor-pointer">
               Apakah GriyaReka melayani renovasi?
             </AccordionTrigger>
             <AccordionContent className="text-slate-600 text-base leading-relaxed">
@@ -249,7 +249,7 @@ export default async function HomePage() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger className="text-left font-semibold">
+            <AccordionTrigger className="text-left font-semibold cursor-pointer">
               Bagaimana sistem pembayarannya?
             </AccordionTrigger>
             <AccordionContent className="text-slate-600 text-base leading-relaxed">

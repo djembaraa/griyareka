@@ -30,16 +30,14 @@ cd griyareka-web
 npm install
 ```
 
-### 3. Supabase Integration
-**CRITICAL**: You must set up your Supabase database before running the local development server, or the application will throw errors due to missing data connections.
+### 3. Running the Development Server
+**CRITICAL**: You must set up your Supabase database before running the local development server, or the application will throw errors due to missing data connections. Please refer to the complete, step-by-step instructions in the [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) file.
 
-Please refer to the complete, step-by-step instructions in the [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) file. This includes:
-1. Setting up your `.env.local` variables (`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
-2. Executing the required SQL schema.
-3. Creating the first Admin user.
+Additionally, to configure other third-party services:
+- **Resend (Email Automations)**: See [RESEND_SETUP.md](./RESEND_SETUP.md)
+- **Groq AI (Chatbot)**: See [GROQ_SETUP.md](./GROQ_SETUP.md)
 
-### 4. Running the Development Server
-Once `.env.local` is configured:
+Once `.env.local` is fully configured:
 
 ```bash
 npm run dev
@@ -51,7 +49,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to view th
 
 ### Public Navigation
 - **Home (`/`)**: Main landing page showcasing premium design, services, and testimonials.
-- **Properties (`/properties`)**: Property catalog displaying available homes (mocked or live data). Click "Lihat Detail" for specific property views.
+- **Properties (`/properties`)**: Property catalog displaying available homes. Click "View Details" for specific property views.
 - **Blog (`/blog`)**: Company news and architecture tips. Click a card to read the full HTML-sanitized article.
 - **About (`/about`) & Services (`/services`)**: Static company information pages.
 
@@ -61,6 +59,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to view th
 - **Dashboard**: High-level overview of the CMS.
 - **Properties**: Create, edit, and delete properties showcased in the public catalog.
 - **Posts**: Create, edit, and delete HTML blog posts. All rich text input is sanitized on the server before rendering.
+- **Testimonials**: Manage user-submitted reviews and view collected lead generation data.
 
 ## Vercel Deployment
 
@@ -81,32 +80,13 @@ Deploying the Next.js application to Vercel is highly recommended.
 4. Select the `deployment-griyareka` branch (or `main`/`master` if you prefer).
 
 ### 3. Configure Environment Variables
-Before clicking "Deploy", you must configure the environment variables so Vercel can connect to your Supabase project:
+Before clicking "Deploy", you must configure the environment variables so Vercel can connect to your Supabase project and other services:
 1. In the "Environment Variables" section, add:
-   - Name: `NEXT_PUBLIC_SUPABASE_URL` | Value: *Your Supabase URL*
-   - Name: `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Value: *Your Supabase Anon Key*
+   - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase Anon Key
+   - `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase Service Role Key (for admin bypass)
+   - `GROQ_API_KEY`: Your Groq API Key
+   - `RESEND_API_KEY`: Your Resend API Key
 
 ### 4. Deploy
 Click **Deploy**. Vercel will automatically build and deploy your application. Once finished, you will be provided with a live URL!
-
-## Langkah Selanjutnya: Pengiriman Email Otomatis
-
-Untuk mengubah fitur Testimonial menjadi alat Lead Generation yang kuat, Anda dapat mengintegrasikan Resend untuk mengirimkan email otomatis (misalnya, ucapan terima kasih karena telah berlangganan).
-
-1. Daftar di [Resend.com](https://resend.com) untuk mendapatkan API Key gratis.
-2. Instal library-nya di terminal: `npm install resend`
-3. Masukkan API Key ke dalam `.env.local` kamu (misal: `RESEND_API_KEY=re_123456789`).
-4. Ganti komentar `// TODO` yang dibuat di file Server Action (`src/app/actions/testimonials.ts`) dengan kode pemanggilan Resend sederhana.
-## Pengaturan AI Chatbot (Groq API)
-
-Aplikasi ini dilengkapi dengan fitur AI Chatbot interaktif menggunakan Llama 3 via Groq. Fitur ini dirancang untuk menjawab pertanyaan pelanggan secara cerdas dan real-time.
-
-Untuk menjalankan fitur ini secara lokal:
-
-1. Daftar dan login di [Groq Cloud](https://console.groq.com).
-2. Masuk ke menu **API Keys** dan buat API Key baru secara gratis.
-3. Buka file `.env.local` di komputer lokalmu dan masukkan key tersebut:
-   ```env
-   GROQ_API_KEY=your_actual_key_here
-   ```
-4. **Selesai!** Fitur Chatbot akan langsung berfungsi setelah API Key dimasukkan dan server dijalankan ulang (`npm run dev`).
