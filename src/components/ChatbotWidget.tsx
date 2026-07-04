@@ -6,6 +6,7 @@ import { UIMessage } from 'ai';
 import { MessageCircle, X, Send } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import ReactMarkdown from 'react-markdown';
 
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,7 +57,20 @@ export function ChatbotWidget() {
                     : 'bg-white border text-slate-800 rounded-bl-none shadow-sm'
                 }`}>
                   {msg.parts?.map((p, i) => (
-                    p.type === 'text' ? <span key={i}>{p.text}</span> : null
+                    p.type === 'text' ? (
+                      <div key={i} className="prose prose-sm prose-slate max-w-none">
+                        <ReactMarkdown
+                          components={{
+                            a: ({ node, ...props }) => (
+                              <a {...props} className="underline font-semibold hover:opacity-80 transition-opacity" target="_blank" rel="noopener noreferrer" />
+                            ),
+                            p: ({ node, ...props }) => <p {...props} className="mb-2 last:mb-0" />
+                          }}
+                        >
+                          {p.text}
+                        </ReactMarkdown>
+                      </div>
+                    ) : null
                   ))}
                 </div>
               </div>
