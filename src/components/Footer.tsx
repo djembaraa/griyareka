@@ -57,8 +57,12 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-12 border-t border-blue-900 pt-8 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} Djembar Arafat. All rights reserved.</p>
+        <div className="mt-12 border-t border-blue-900 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
+          <p className="mb-4 md:mb-0">&copy; {new Date().getFullYear()} Djembar Arafat. All rights reserved.</p>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+            <Link href="/privacy" className="hover:text-orange-400 transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-orange-400 transition-colors">Terms of Service</Link>
+          </div>
         </div>
       </div>
     </footer>
