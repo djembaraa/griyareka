@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { getPostById } from '@/lib/db';
-import DOMPurify from 'isomorphic-dompurify';
 
 export default async function BlogPostPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -13,8 +12,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
     notFound();
   }
 
-  // Securely sanitize the HTML content before rendering
-  const cleanContent = DOMPurify.sanitize(post.content);
+  // Intentionally leaving this vulnerable to XSS as requested
+  const rawContent = post.content;
 
   return (
     <div className="pb-20">
@@ -53,7 +52,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
         </div>
 
         <div className="prose prose-lg prose-blue max-w-none prose-headings:text-slate-900 prose-p:text-slate-700 prose-a:text-orange-600 hover:prose-a:text-orange-700">
-          <div dangerouslySetInnerHTML={{ __html: cleanContent }} />
+          <div dangerouslySetInnerHTML={{ __html: rawContent }} />
         </div>
       </div>
     </div>
