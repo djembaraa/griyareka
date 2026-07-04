@@ -1,6 +1,5 @@
 import { getPaginatedTestimonials } from '@/lib/db';
 import { TestimonialActions } from '@/components/TestimonialActions';
-import DOMPurify from 'isomorphic-dompurify';
 import { PaginationControls } from '@/components/PaginationControls';
 
 export const dynamic = 'force-dynamic';
@@ -46,14 +45,12 @@ export default async function AdminTestimonialsPage(props: { searchParams: Promi
                       {new Date(testi.created_at).toLocaleDateString('id-ID')}
                     </td>
                     <td className="px-6 py-4 font-medium min-w-[150px]">
-                      {DOMPurify.sanitize(testi.name)}
+                      {testi.name}
                     </td>
                     <td className="px-6 py-4 text-slate-600 max-w-md min-w-[200px]">
-                      {/* Secure rendering for admin moderation preview */}
-                      <div 
-                        className="line-clamp-3 whitespace-pre-wrap"
-                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(testi.content) }}
-                      />
+                      <div className="line-clamp-3 whitespace-pre-wrap">
+                        {testi.content}
+                      </div>
                     </td>
                     <td className="px-6 py-4 min-w-[150px]">
                       <div className="flex flex-col space-y-1">
