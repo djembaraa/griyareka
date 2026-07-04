@@ -25,10 +25,13 @@ export default function AboutPage() {
             </p>
           </div>
           <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-             {/* Placeholder for Company Video/Image */}
-            <div className="absolute inset-0 bg-slate-200 flex items-center justify-center">
-               <span className="text-slate-400 font-medium">Company Video / Image Placeholder</span>
-            </div>
+            <Image
+              src="/images/about-company.jpg"
+              alt="GriyaReka Office and Team"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
           </div>
         </div>
       </section>
@@ -73,14 +76,18 @@ export default function AboutPage() {
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <h2 className="text-3xl font-bold text-slate-900 mb-12">Tim Kami</h2>
         <div className="flex flex-wrap justify-center gap-8">
-          {[1, 2, 3].map((i) => (
+          {[
+            { name: "Budi Santoso", role: "Founder & CEO", image: "/images/team-ceo.jpg" },
+            { name: "Ratna Sari", role: "Lead Architect", image: "/images/team-architect.jpg" },
+            { name: "Mike Shinoa", role: "Head of Sales", image: "/images/team-sales.jpg" }
+          ].map((member, i) => (
             <div key={i} className="w-64 space-y-4">
-              <div className="relative w-48 h-48 mx-auto rounded-full overflow-hidden bg-slate-200">
-                 {/* Team Member Placeholder */}
+              <div className="relative w-48 h-48 mx-auto rounded-full overflow-hidden bg-slate-200 shadow-md">
+                 <Image src={member.image} alt={member.name} fill className="object-cover" sizes="192px" />
               </div>
               <div>
-                <h4 className="text-xl font-bold text-slate-900">Nama Anggota {i}</h4>
-                <p className="text-orange-600">Posisi / Jabatan</p>
+                <h4 className="text-xl font-bold text-slate-900">{member.name}</h4>
+                <p className="text-orange-600 font-medium">{member.role}</p>
               </div>
             </div>
           ))}
