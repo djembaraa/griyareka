@@ -90,3 +90,7 @@ Before clicking "Deploy", you must configure the environment variables so Vercel
 
 ### 4. Deploy
 Click **Deploy**. Vercel will automatically build and deploy your application. Once finished, you will be provided with a live URL!
+
+## License and Copyright
+Copyright (c) 2026 Djembar Arafat. All rights reserved.
+This project is licensed under the MIT License. See the [LICENSE.md](./LICENSE.md) file for details.
