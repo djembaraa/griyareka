@@ -29,7 +29,7 @@ export function PostFilters({ authors }: PostFiltersProps) {
         <Label className="text-xs text-slate-500 uppercase font-semibold tracking-wider">Filter Penulis</Label>
         <Select 
           value={authorId} 
-          onValueChange={(val) => router.push(`${pathname}?${createQueryString('authorId', val)}`)}
+          onValueChange={(val) => router.push(`${pathname}?${createQueryString('authorId', val || '')}`)}
         >
           <SelectTrigger className="w-full bg-slate-50">
             <SelectValue placeholder="Pilih Penulis" />
@@ -49,7 +49,7 @@ export function PostFilters({ authors }: PostFiltersProps) {
         <Label className="text-xs text-slate-500 uppercase font-semibold tracking-wider">Urutkan Berdasarkan</Label>
         <Select 
           value={sortBy} 
-          onValueChange={(val) => router.push(`${pathname}?${createQueryString('sortBy', val)}`)}
+          onValueChange={(val) => router.push(`${pathname}?${createQueryString('sortBy', val || '')}`)}
         >
           <SelectTrigger className="w-full bg-slate-50">
             <SelectValue placeholder="Urutkan" />
