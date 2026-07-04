@@ -44,7 +44,7 @@ export function Navbar() {
                 {route.name}
               </Link>
             ))}
-            <Button className="bg-orange-600 hover:bg-orange-700 text-white cursor-pointer">
+            <Button render={<Link href="/contact" />} className="bg-orange-600 hover:bg-orange-700 text-white cursor-pointer">
               Konsultasi Sekarang
             </Button>
           </nav>
@@ -108,9 +108,9 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="pt-2">
-                <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-                  Konsultasi Sekarang
-                </Button>
+                  <Button render={<Link href="/contact" />} className="w-full bg-orange-600 hover:bg-orange-700 text-white cursor-pointer">
+                    Konsultasi Sekarang
+                  </Button>
               </div>
             </div>
           </motion.div>
