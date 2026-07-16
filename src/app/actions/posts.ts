@@ -8,7 +8,8 @@ import { logActivityServer } from '@/lib/activity';
 const createPostSchema = z.object({
   title: z.string().min(1, 'Judul tidak boleh kosong'),
   content: z.string().min(1, 'Konten tidak boleh kosong'),
-  image_url: z.string().url().optional().or(z.literal('')),
+  // Optional thumbnail: empty string is allowed; null/undefined treated as ""
+  image_url: z.union([z.string().url(), z.literal('')]).optional().default(''),
 });
 
 export async function createPost(currentUserId: string, formData: FormData) {
@@ -28,10 +29,12 @@ export async function createPost(currentUserId: string, formData: FormData) {
       return { success: false, message: 'Akses ditolak. Anda tidak memiliki izin untuk membuat artikel.' };
     }
 
+    const rawImage = formData.get('image_url');
     const rawData = {
-      title: formData.get('title') as string,
-      content: formData.get('content') as string,
-      image_url: formData.get('image_url') as string,
+      title: (formData.get('title') as string) ?? '',
+      content: (formData.get('content') as string) ?? '',
+      // FormData.get returns null when field is omitted → was causing Zod "Invalid input"
+      image_url: typeof rawImage === 'string' ? rawImage : '',
     };
 
     const validation = createPostSchema.safeParse(rawData);

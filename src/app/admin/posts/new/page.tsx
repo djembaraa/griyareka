@@ -96,7 +96,8 @@ export default function NewPostPage() {
       const formData = new FormData();
       formData.append('title', title);
       formData.append('content', content);
-      if (finalImageUrl) formData.append('image_url', finalImageUrl);
+      // Always send image_url (empty string if no upload) so server validation does not get null
+      formData.append('image_url', finalImageUrl || '');
 
       const res = await createPost(userId, formData);
       
